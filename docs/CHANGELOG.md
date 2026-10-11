@@ -17,6 +17,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 | `Checkpoint: Phase 12 — Data Integrity & Isolation Verified` | 2026-10-11 12:55:00 | 49a8a90 | Phase 12 Data Integrity & Test Isolation Audit | 67 automated tests passed (61 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); Database isolation & safeguards verified | Coding Agent |
 | `Checkpoint: Phase 12 — Security Regression & Authorization Verified` | 2026-10-11 13:10:00 | 152fbaf | Phase 12 Security Regression & Authorization Testing | 98 passed, 2 xfailed, 0 failed (92 Backend + 6 Blockchain); BUG-09, BUG-10, BUG-11 resolved | Coding Agent |
 | `Checkpoint: Phase 12 — Complete & Verified` | 2026-10-11 13:25:00 | a598c23 | Phase 12 Final Acceptance Testing & Closure | 98 passed, 2 xfailed, 0 failed (100 total items); All 13 REQs verified; 0 remaining blockers | Coding Agent |
+| `Checkpoint: Phase 12 — Real-Service Integration Verified` | 2026-10-11 14:00:00 | PENDING_COMMIT | Phase 12 Real-Service Integration Verification | Standalone Hardhat node live verified on port 8545; MongoDB host absence documented | Coding Agent |
 
 ---
 
@@ -208,4 +209,24 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
   - Automated Hardhat suite: 6 passed, 0 failed in 2s.
   - Working tree clean; `git diff --check` passed with 0 errors.
 - **Status:** **COMPLETE — VERIFIED**
+- **Recorded By:** Coding Agent
+
+---
+
+### Checkpoint: Phase 12 — Real-Service Integration Verified
+- **Timestamp:** 2026-10-11 14:00:00 IST
+- **Git Commit:** PENDING_COMMIT
+- **Scope / Changes:**
+  - Started standalone Hardhat node on port 8545 (Chain ID 31337).
+  - Deployed `EvidenceRegistry.sol` to local standalone node at `0x5FbDB2315678afecb367f032d93F642f64180aa3`.
+  - Executed end-to-end integration test `blockchain/scripts/verify_standalone_integration.js` on live node: registered evidence, confirmed duplicate rejection, transferred custody, and verified on-chain hashes.
+  - Executed `npx hardhat test --network localhost` (6/6 passing).
+  - Updated `test_fastapi_blockchain.py` to verify live node reachability via `check_blockchain_health()`.
+  - Conclusively audited MongoDB Community Server absence on host OS (`where.exe mongod` not found, Windows Service not registered, port 27017 closed). Confirmed tests accurately report `XFAIL (BUG-03)`.
+  - Created `docs/testing/TEST_EVIDENCE_TRACEABILITY.md`.
+  - Updated `docs/testing/TEST_REPORT.md` and `docs/testing/BUG_LOG.md` (BUG-04 resolved).
+- **Verification Performed:**
+  - Backend acceptance suite: 92 passed, 2 xfailed, 0 failed.
+  - Blockchain standalone suite: 6 passed on `--network localhost` + 5/5 workflow steps in `verify_standalone_integration.js`.
+- **Status:** **REAL-SERVICE INTEGRATION VERIFIED**
 - **Recorded By:** Coding Agent

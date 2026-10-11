@@ -10,8 +10,8 @@ This document records all defects, security issues, configuration flaws, and imp
 |---|---|---|---|---|---|---|
 | BUG-01 | Medium (SEV-3) | Backend CORS (`app/main.py`) | Authorized frontend port (5500) missing from CORS `origins` | **Resolved** | Automated Test | `tests/test_cors.py` |
 | BUG-02 | High (SEV-2) | System Architecture | Phases 2–11 feature implementations missing (routes and services were stubs) | **Resolved** | Integration Suite | `tests/integration/test_evidence_lifecycle.py` |
-| BUG-03 | High (SEV-2) | Infrastructure / DB | Local MongoDB daemon on `localhost:27017` is not active on host OS | **Documented (Mitigated)** | Connection Probe | `Test-NetConnection` |
-| BUG-04 | Medium (SEV-3) | Infrastructure / RPC | Standalone Hardhat node on `127.0.0.1:8545` is not active on host OS | **Documented (Mitigated)** | Connection Probe | `Test-NetConnection` |
+| BUG-03 | High (SEV-2) | Infrastructure / DB | Local MongoDB Community Server not installed on host OS; port 27017 closed | **Documented (Mitigated & Isolated)** | System Audit & Probes | `tests/test_database_config.py` |
+| BUG-04 | Medium (SEV-3) | Infrastructure / RPC | Standalone Hardhat node on `127.0.0.1:8545` was offline | **Resolved & Verified** | Live Node Verification | `scripts/verify_standalone_integration.js` |
 | BUG-05 | High (SEV-2) | Backend Security (`app/routes/*`) | Mutation routes lacked server-side RBAC dependencies | **Resolved** | Security Audit | `tests/test_api_contract_security.py` |
 | BUG-06 | Medium (SEV-3) | Frontend Auth (`frontend/js/auth.js`) | Login form omitted JWT token storage in sessionStorage | **Resolved** | Contract Audit | Manual & Frontend Client Suite |
 | BUG-07 | High (SEV-2) | Verification Route (`app/routes/verification.py`) | Verification defaulted missing physical files on disk to DB hash | **Resolved** | Data Integrity Audit | `tests/test_data_integrity.py` |
@@ -58,21 +58,22 @@ This document records all defects, security issues, configuration flaws, and imp
 
 ---
 
-### Bug ID: BUG-03 — MongoDB Local Daemon Inactive on Host OS
+### Bug ID: BUG-03 — MongoDB Community Server Not Installed on Host OS
 - **Severity:** High (SEV-2 Blockage)
 - **Component:** Infrastructure / Host Operating System
-- **Summary:** TCP socket connection to `localhost:27017` failed. MongoDB Community Server daemon is not running on the host OS.
-- **Mitigation Applied:** The application implements resilient in-memory state fallbacks for cases, evidence, and audit logs during automated testing and standalone runs when the daemon is offline, guaranteeing 100% test reproducibility without external daemon dependency.
-- **Current Status:** **Documented (Resilient Fallback Active)**.
+- **Summary:** TCP socket connection to `localhost:27017` failed. System-wide audit confirmed that MongoDB Community Server (`mongod.exe`) is not installed on the host OS (`where.exe mongod` not found, Windows Service not registered, standard directories absent).
+- **Mitigation & Safeguard Applied:** The application operates in an in-memory fallback state with strict test database safeguards (`safeguard_test_database`), guaranteeing 100% test isolation and zero possibility of overwriting development databases. Tests accurately report `XFAIL (BUG-03)` rather than falsely claiming physical daemon passes.
+- **Current Status:** **Documented (Mitigated & Isolated)**.
 
 ---
 
-### Bug ID: BUG-04 — Standalone Hardhat RPC Node Inactive on Host OS
+### Bug ID: BUG-04 — Standalone Hardhat Node Inactive on Host OS
 - **Severity:** Medium (SEV-3 Blockage)
 - **Component:** Infrastructure / Local Blockchain JSON-RPC
-- **Summary:** Standalone daemon on `127.0.0.1:8545` is not running.
-- **Mitigation Applied:** Hardhat unit tests run against an in-process ephemeral network (`npx hardhat test` passing 6/6), and `blockchain.py` implements deterministic cryptographic transaction hashing and ledger fallback when the standalone RPC daemon is offline.
-- **Current Status:** **Documented (In-Process Fallback Active)**.
+- **Summary:** Standalone daemon on `127.0.0.1:8545` was not initially running on host OS.
+- **Fix & Verification Applied:** Launched standalone Hardhat node daemon on port 8545 (Chain ID 31337). Deployed `EvidenceRegistry.sol` to `0x5FbDB2315678afecb367f032d93F642f64180aa3`. Executed end-to-end integration test `blockchain/scripts/verify_standalone_integration.js` on live node: registered evidence, verified duplicate rejection, transferred custody, and verified on-chain hashes. All 6 Hardhat tests passed on `--network localhost`.
+- **Regression Test:** `npx hardhat test --network localhost` (6/6 passed) & `npx hardhat run scripts/verify_standalone_integration.js --network localhost` (100% passed).
+- **Current Status:** **Resolved & Verified**.
 
 ---
 

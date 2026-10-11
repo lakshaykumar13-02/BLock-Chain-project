@@ -21,7 +21,7 @@ The following runtime tools and versions were physically detected on the host en
 | **Git** | `2.55.0.windows.3` | `git --version` | Verified Active |
 | **Pytest** | `9.1.1` | `pytest --version` | Verified Active in venv |
 | **MongoDB Service** | N/A (Port 27017 Closed) | `Test-NetConnection -Port 27017` | Offline (In-Memory Resilient Fallback Active) |
-| **Hardhat Standalone Node** | N/A (Port 8545 Closed) | `Test-NetConnection -Port 8545` | Ephemeral In-Process Hardhat Network Active |
+| **Hardhat Standalone Node** | `v2.29.1` (Port 8545 Active) | `Test-NetConnection -Port 8545` | Verified Active (Contract Deployed & Tested) |
 
 ---
 
@@ -147,7 +147,7 @@ The following runtime tools and versions were physically detected on the host en
 | **BUG-01** | Missing frontend port 5500 in CORS origins list | `backend/app/main.py` | **Resolved** |
 | **BUG-02** | Phases 2–11 workflow routes missing in backend | Routes & Services | **Resolved (9/9 Blockers)** |
 | **BUG-03** | Local MongoDB service inactive on port 27017 | Host Environment | **Documented (Resilient Fallback Active)** |
-| **BUG-04** | Standalone Hardhat node offline on port 8545 | Host Environment | **Documented (Hardhat In-Process Active)** |
+| **BUG-04** | Standalone Hardhat node offline on port 8545 | Host Environment | **Resolved & Verified (Live Node Deployed)** |
 | **BUG-05** | Missing server-side role enforcement on state mutation routes | `backend/app/routes/*` | **Resolved (Verified in Security Suite)** |
 | **BUG-06** | Frontend `auth.js` form submission lacked JWT token persistence | `frontend/js/auth.js` | **Resolved (Verified in Client Suite)** |
 | **BUG-07** | Verification route masked missing physical files as matching | `backend/app/routes/verification.py` | **Resolved (Flags missing file)** |

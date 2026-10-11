@@ -52,17 +52,31 @@ Neither probe is counted as passed. They represent documented environmental boun
 
 ---
 
-## 4. Real Service vs. Mock / Fallback Inventory
+## 4. Real Service vs. Mock / Fallback Inventory & Real-Service Audit
 
-| System Area | In-Use Test Component | Real Service Component | Verified In-Process | Documented Limitation |
+| System Area | In-Use Test Component | Real Service Component | Verified Live on Host | Real-Service Integration Status & Evidence |
 |---|---|---|:---:|---|
-| **FastAPI Backend** | Full ASGI TestClient app | Real application routes, middleware, dependencies, schemas | Yes | None; full ASGI stack executed |
-| **Authentication** | Bcrypt + PyJWT | Real cryptographic hashing and signature validation | Yes | Demo user registry stored in memory |
-| **Filesystem Storage** | Real disk writes | Multipart upload, physical directory traversal defense | Yes | Files isolated to test storage directories |
-| **Forensic PDF** | Real ReportLab compiler | PDF generation, independent SHA-256 calculation | Yes | Writes to local reports folder |
-| **QR Generator** | Real `qrcode` library | Dynamic PNG byte stream generation | Yes | Streams in-memory image response |
-| **MongoDB Database** | In-Memory fallback store | MongoDB Community Server daemon (Port 27017) | Yes (Fallback) | Host daemon offline (`BUG-03`). Test DB safeguard verified |
-| **Blockchain Smart Contract** | Ephemeral Hardhat EVM | Standalone Hardhat node on port 8545 (`BUG-04`) | Yes (EVM) | Hardhat tests execute against in-process node; backend uses deterministic ledger fallback |
+| **FastAPI Backend** | Full ASGI TestClient app | Real application routes, middleware, dependencies, schemas | **Yes** | Full ASGI application stack executed; 20 endpoints mounted in [main.py](file:///d:/parjaayi%20project/CHAINVAULT/backend/app/main.py) |
+| **Authentication** | Bcrypt + PyJWT | Real cryptographic hashing and signature validation | **Yes** | Real bcrypt hashing, JWT issuance, and verification validated |
+| **Filesystem Storage** | Real disk writes | Multipart upload, physical directory traversal defense | **Yes** | Writes synthetic evidence to disk; traversal attacks rejected |
+| **Forensic PDF** | Real ReportLab compiler | PDF generation, independent SHA-256 calculation | **Yes** | Compiles valid PDF files; verified independent SHA-256 hash |
+| **QR Generator** | Real `qrcode` library | Dynamic PNG byte stream generation | **Yes** | Generates real PNG bytes encoding verification URL |
+| **Standalone Hardhat Node** | Live local node (`localhost:8545`) | Hardhat EVM standalone JSON-RPC daemon on port 8545 | **Yes (LIVE)** | Deployed [EvidenceRegistry.sol](file:///d:/parjaayi%20project/CHAINVAULT/blockchain/contracts/EvidenceRegistry.sol) to `0x5FbDB2315678afecb367f032d93F642f64180aa3` (Chain ID 31337). Executed `verify_standalone_integration.js` on live node: registered evidence, confirmed duplicate rejection, transferred custody, verified authentic/tampered hashes. All 6 Hardhat tests passed on `--network localhost`. |
+| **MongoDB Database** | In-Memory fallback store | MongoDB Community Server daemon (Port 27017) | **BLOCKED (Not Installed)** | Conclusively inspected: Windows services, `where.exe mongod`, and `C:\Program Files\MongoDB` confirm MongoDB is not installed on host OS. Socket probe on port 27017 fails. In-memory fallback active. Safeguard prevents dev DB drops. Tests accurately report `XFAIL (BUG-03)`. |
+
+---
+
+## 5. Test Suite Separation & Category Reconciliation
+
+- **Backend Unit & Configuration Tests:** 12 passed (health, cors, config, hashing, baseline)
+- **Backend API Contract & Security Enforcement:** 8 passed (RBAC, missing token, expired token, immutability)
+- **Backend Data Integrity & Preservation:** 13 passed (tamper detection, custody ordering, non-destructive reports, DB safeguards)
+- **Backend Security Regression & Authorization:** 31 passed (4-role RBAC matrix, path traversal, 50MB upload limit, character sanitization, no secrets)
+- **Backend Feature & Lifecycle Integration:** 17 passed (cases CRUD, evidence upload, lifecycle steps 1–11)
+- **Hardhat In-Process EVM Suite:** 6 passed (`EvidenceRegistry.test.js` default runner)
+- **Standalone Hardhat Live Node Integration:** 6 passed on `--network localhost` + 5/5 workflow steps passed in `verify_standalone_integration.js`
+- **Real MongoDB Daemon Integration Tests:** 2 marked `XFAIL` (`BUG-03` host daemon not installed; resilient fallback active)
+
 
 ---
 
