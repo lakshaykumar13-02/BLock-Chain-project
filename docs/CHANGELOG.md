@@ -16,7 +16,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 | `Checkpoint: Phase 12 — API Contract & Routes Verified` | 2026-10-11 12:40:00 | 142f1a8 | Phase 12 API Contract & Route Consistency Audit | 54 automated tests passed (48 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); All 4 layers aligned; Server-side RBAC verified | Coding Agent |
 | `Checkpoint: Phase 12 — Data Integrity & Isolation Verified` | 2026-10-11 12:55:00 | 49a8a90 | Phase 12 Data Integrity & Test Isolation Audit | 67 automated tests passed (61 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); Database isolation & safeguards verified | Coding Agent |
 | `Checkpoint: Phase 12 — Security Regression & Authorization Verified` | 2026-10-11 13:10:00 | 152fbaf | Phase 12 Security Regression & Authorization Testing | 98 passed, 2 xfailed, 0 failed (92 Backend + 6 Blockchain); BUG-09, BUG-10, BUG-11 resolved | Coding Agent |
-| `Checkpoint: Phase 12 — Complete & Verified` | 2026-10-11 13:25:00 | PENDING_COMMIT | Phase 12 Final Acceptance Testing & Closure | 98 passed, 2 xfailed, 0 failed (100 total items); All 13 REQs verified; 0 remaining blockers | Coding Agent |
+| `Checkpoint: Phase 12 — Complete & Verified` | 2026-10-11 13:25:00 | a598c23 | Phase 12 Final Acceptance Testing & Closure | 98 passed, 2 xfailed, 0 failed (100 total items); All 13 REQs verified; 0 remaining blockers | Coding Agent |
 
 ---
 
@@ -191,7 +191,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 
 ### Checkpoint: Phase 12 — Complete & Verified
 - **Timestamp:** 2026-10-11 13:25:00 IST
-- **Git Commit:** PENDING_COMMIT
+- **Git Commit:** `a598c23`
 - **Scope / Changes:**
   - Consolidated and verified all Phase 12 testing deliverables across unit, integration, lifecycle, security regression, data integrity, and API contract suites.
   - Executed final acceptance testing suites:
