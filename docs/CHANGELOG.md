@@ -24,7 +24,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 | `Checkpoint: Phase 13.1 — Preflight & Environment Verified` | 2026-10-11 18:38:00 | `3d522cd` | Phase 13.1 Preflight & Environment Verification | All 4 local services live and healthy; API roundtrip verified; docs/demo/PREFLIGHT_REPORT.md created | Coding Agent |
 | `Checkpoint: Phase 13.2 — Complete Workflow Demonstrated` | 2026-10-11 19:35:00 | `b3c85c0` | Phase 13.2 Complete Workflow Demonstration | 14/14 workflow steps passed; docs/demo/PHASE_13_2_DEMO_REPORT.md created | Coding Agent |
 | `Checkpoint: Phase 13.3 — Final Demonstration & Evaluator Preparation Complete` | 2026-10-11 19:45:00 | `9671066` | Phase 13.3 Evaluator Preparation | Full presentation and evaluation suite created: DEMO_SCRIPT.md, DEMO_RUNBOOK.md, KNOWN_LIMITATIONS.md, EVALUATOR_QA.md | Coding Agent |
-| `Checkpoint: Phase 13.3 — Documentation Audit & Final Validation Complete` | 2026-10-11 20:00:00 | Pending Commit | Phase 13.3 Code-Grounded Accuracy Audit | Audited all 4 demo docs against actual code; corrected audit scope, PDF SHA-256 vs X.509 signature, QR localhost networking, in-memory volatility, ephemeral Hardhat state, and legal disclaimers | Coding Agent |
+| `Checkpoint: Phase 13.3 — Documentation Audit & Final Validation Complete` | 2026-10-11 20:00:00 | `cc3374f` | Phase 13.3 Code-Grounded Accuracy Audit | Audited all 4 demo docs against actual code; corrected audit scope, PDF SHA-256 vs X.509 signature, QR localhost networking, in-memory volatility, ephemeral Hardhat state, and legal disclaimers | Coding Agent |
 
 ---
 
@@ -370,7 +370,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 
 ### Checkpoint: Phase 13.3 — Documentation Audit & Final Validation Complete
 - **Timestamp:** 2026-10-11 20:00:00 IST
-- **Git Commit:** Pending Commit
+- **Git Commit:** `cc3374f`
 - **Scope / Changes:**
   - Conducted rigorous code-grounded accuracy audit across all 4 evaluator documents against actual implementation:
     1. **Audit Trail Scope:** Clarified in `DEMO_SCRIPT.md`, `KNOWN_LIMITATIONS.md`, and `EVALUATOR_QA.md` that `GET /api/audit/logs/{id}` queries `AUDIT_LOGS_STORE` (tracking custody transfers and synthesized upload provenance), rather than a unified SIEM audit log across all system actions.
