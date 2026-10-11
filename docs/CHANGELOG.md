@@ -22,7 +22,8 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 | `Checkpoint: Phase 12 — Real MongoDB Integration Resolved & Complete` | 2026-10-11 16:45:00 | `e54d43e` | Phase 12 Real MongoDB Integration Complete | MongoDB Community Server running as Windows service; Live ping, CRUD, indexes, and cleanup verified (101/101 tests passed) | Coding Agent |
 | `Checkpoint: Phase 12 — Final Closure Verified` | 2026-10-11 17:55:00 | `3dafa08` | Phase 12 Final Acceptance & Closure Verification | 101/101 tests passed (100%), all 13 REQs verified, isolated recovery verified (84/84 files, backend import OK); Phase 12 COMPLETE — VERIFIED | Coding Agent |
 | `Checkpoint: Phase 13.1 — Preflight & Environment Verified` | 2026-10-11 18:38:00 | `3d522cd` | Phase 13.1 Preflight & Environment Verification | All 4 local services live and healthy; API roundtrip verified; docs/demo/PREFLIGHT_REPORT.md created | Coding Agent |
-| `Checkpoint: Phase 13.2 — Complete Workflow Demonstrated` | 2026-10-11 19:35:00 | `In Progress` | Phase 13.2 Complete Workflow Demonstration | 14/14 workflow steps passed (UI login, case creation, upload, SHA-256 match, blockchain register, custody transfer, 3-way hash check, QR badge, PDF report, audit logs, 4 unauthorized rejections) | Coding Agent |
+| `Checkpoint: Phase 13.2 — Complete Workflow Demonstrated` | 2026-10-11 19:35:00 | `b3c85c0` | Phase 13.2 Complete Workflow Demonstration | 14/14 workflow steps passed; docs/demo/PHASE_13_2_DEMO_REPORT.md created | Coding Agent |
+| `Checkpoint: Phase 13.3 — Final Demonstration & Evaluator Preparation Complete` | 2026-10-11 19:45:00 | In Progress | Phase 13.3 Evaluator Preparation | Full presentation and evaluation suite created: DEMO_SCRIPT.md, DEMO_RUNBOOK.md, KNOWN_LIMITATIONS.md, EVALUATOR_QA.md | Coding Agent |
 
 ---
 
@@ -328,7 +329,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 
 ### Checkpoint: Phase 13.2 — Complete Workflow Demonstrated
 - **Timestamp:** 2026-10-11 19:35:00 IST
-- **Git Commit:** In Progress
+- **Git Commit:** `b3c85c0`
 - **Scope / Changes:**
   - Executed complete 14-step forensic workflow demonstration in the active local environment:
     1. Web login via browser subagent at `http://127.0.0.1:5500/login.html` (recorded video and screenshots).
@@ -347,4 +348,19 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
     14. Safe unauthorized actions correctly rejected (405 Method Not Allowed on evidence deletion, 403 on case deletion as investigator, 403 on viewer upload, 404/400 on report download traversal).
   - Created comprehensive report `docs/demo/PHASE_13_2_DEMO_REPORT.md`.
 - **Status:** **COMPLETE — 14/14 STEPS PASSED**
+- **Recorded By:** Coding Agent
+
+---
+
+### Checkpoint: Phase 13.3 — Final Demonstration & Evaluator Preparation Complete
+- **Timestamp:** 2026-10-11 19:45:00 IST
+- **Git Commit:** In Progress
+- **Scope / Changes:**
+  - Created comprehensive evaluator preparation documentation suite in `docs/demo/`:
+    1. `DEMO_SCRIPT.md`: 10–15 minute presentation script covering problem statement, architecture, authentication, case creation, evidence ingestion, SHA-256 calculation, on-chain anchoring, custody handover, tripartite verification, QR verification badge, forensic PDF generation, defensive controls, and failure recovery points.
+    2. `DEMO_RUNBOOK.md`: SOP detailing prerequisites, exact startup order, health check URLs, contract address `0x5FbDB...`, Chain ID 31337, synthetic test accounts, clean shutdown procedures, and tier-by-tier troubleshooting guide.
+    3. `KNOWN_LIMITATIONS.md`: Strict delineation of prototype scope versus production requirements (50 MB upload ceiling, local loopback boundary, local testnet vs. enterprise consortium networks, ISO/IEC 27037 forensic principles vs. legal certification disclaimers).
+    4. `EVALUATOR_QA.md`: In-depth, code-verified technical answers to all 10 evaluator examination questions (blockchain motivation, off-chain storage rationale, SHA-256 properties, tamper detection behavior, custody event mechanics, QR payload, server-side RBAC enforcement, database/blockchain offline resilience, security boundaries, and Hardhat network selection).
+  - Verified cross-document consistency across routes, permissions, contract addresses, and evidence hashes.
+- **Status:** **COMPLETE — EVALUATOR SUITE VERIFIED**
 - **Recorded By:** Coding Agent
