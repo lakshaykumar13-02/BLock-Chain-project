@@ -14,7 +14,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 | `Checkpoint: Phase 12 — Regression Verified` | 2026-10-11 11:52:00 | `5363f85` | Phase 12 Regression Testing & Bug Verification | 47 automated tests (24 passed, 23 blocked, 0 regressions, 0 failed); Phase status INCOMPLETE / BLOCKED | Coding Agent |
 | `Checkpoint: Phase 12 — Blockers Resolved` | 2026-10-11 12:15:00 | eca6555 | Phase 12 9-Step Blocker Resolution | 46 automated tests passed (40 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); All 9 blockers BLK-01 to BLK-09 resolved | Coding Agent |
 | `Checkpoint: Phase 12 — API Contract & Routes Verified` | 2026-10-11 12:40:00 | 142f1a8 | Phase 12 API Contract & Route Consistency Audit | 54 automated tests passed (48 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); All 4 layers aligned; Server-side RBAC verified | Coding Agent |
-| `Checkpoint: Phase 12 — Data Integrity & Isolation Verified` | 2026-10-11 12:55:00 | 27208a9 | Phase 12 Data Integrity & Test Isolation Audit | 67 automated tests passed (61 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); Database isolation & safeguards verified | Coding Agent |
+| `Checkpoint: Phase 12 — Data Integrity & Isolation Verified` | 2026-10-11 12:55:00 | 49a8a90 | Phase 12 Data Integrity & Test Isolation Audit | 67 automated tests passed (61 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); Database isolation & safeguards verified | Coding Agent |
 
 ---
 
@@ -138,7 +138,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 
 ### Checkpoint: Phase 12 — Data Integrity & Isolation Verified
 - **Timestamp:** 2026-10-11 12:55:00 IST
-- **Git Commit:** `27208a9`
+- **Git Commit:** `49a8a90`
 - **Scope / Changes:**
   - Enforced test database isolation strictly to `chainvault_test` via `conftest.py` autouse fixture.
   - Implemented automated destructive operation safeguard `MongoDBClient.safeguard_test_database()` rejecting drop actions on development and production databases.
