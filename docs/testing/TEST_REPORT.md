@@ -47,14 +47,14 @@ The following runtime tools and versions were physically detected on the host en
 
 ## 3. Results Grouped by Component
 
-### A. Backend & Database (18 Passed, 2 XFailed)
+### A. Backend & Database (20 Passed, 0 Failed)
 - **Health Check & Routing:** **Passed** (`/api/health` returns 200, unmapped returns 404).
 - **CORS Allowed Origins:** **Passed** (Port 5500 allowed; BUG-01 resolved).
 - **Test Database Isolation:** **Passed** (Guaranteed targeting of `chainvault_test`).
 - **Database Collections Declared:** **Passed** (All 6 core collections declared).
 - **Service Offline Resilience:** **Passed** (Handles offline MongoDB with in-memory state store).
 - **Case Management (`/api/cases`):** **Passed** (Case creation and retrieval verified).
-- **Live Connection & Daemon Probe:** **XFailed** (Port 27017 offline; BUG-03 documented).
+- **Live Connection & Daemon Probe:** **Passed** (Port 27017 active; live ping & CRUD verified on MongoDB Community Server; BUG-03 resolved).
 
 ### B. Blockchain Integration (9 Passed, 0 Failed)
 - **Contract Deployment & Admin State:** **Passed** (`admin == deployer.address`).

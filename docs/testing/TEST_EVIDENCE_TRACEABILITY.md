@@ -78,13 +78,13 @@ All host services are live and active on their designated endpoints:
 
 ## 5. Checkpoint & Recovery Verification Summary
 
-- **Latest Stable Checkpoint Identifier:** `a598c23` (`Checkpoint: Phase 12 — Complete & Verified`)
+- **Latest Stable Checkpoint Identifier:** `e54d43e` (`Checkpoint: Phase 12 — Real MongoDB Integration Resolved & Complete`) / `3dafa08` (Final Closure Documentation Reconciled)
 - **Git Commit Manifest:** Tracked in [CHANGELOG.md](file:///d:/parjaayi%20project/CHAINVAULT/docs/CHANGELOG.md)
 - **Recovery Verification Procedure:** Documented in [RECOVERY_LOG.md](file:///d:/parjaayi%20project/CHAINVAULT/docs/RECOVERY_LOG.md)
   - Target Path: `d:\parjaayi project\ChainVault-recovery-test`
-  - Restored Files: 81/81 tracked files restored cleanly matching Git tree.
-  - Secret Check: Verified `.env` was not committed or restored.
-  - Isolated Import Test: `python -c "import sys; sys.path.insert(0, '.'); import app.main; print('Isolated recovery backend import OK')"` -> Exit code `0`.
+  - Restored Files: 84/84 tracked files restored cleanly matching Git tree.
+  - Secret Check: Verified `.env` and private keys were not committed or restored (`Has .env leaked: False`).
+  - Isolated Import Test: `python -c "import sys; sys.path.insert(0, r'$dest\backend'); import app.main; print('Isolated recovery backend import OK')"` -> Exit code `0`.
   - Active Workspace Isolation: Tested in temporary directory; cleaned up post-verification.
   - Result: **Proven Recovery Point Verified**.
 
