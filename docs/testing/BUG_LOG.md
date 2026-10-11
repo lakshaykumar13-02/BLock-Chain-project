@@ -11,6 +11,7 @@ This document records all defects, security issues, configuration flaws, and imp
 | BUG-01 | Medium (SEV-3) | Backend CORS (`app/main.py`) | Authorized frontend port (5500) missing from CORS `origins` | **Resolved** | Automated Test | `tests/test_cors.py` |
 | BUG-02 | High (SEV-2) | System Architecture | Phases 2–11 feature implementations missing (routes and services are stubs) | **Documented / Blocking** | Audit & Coverage Tests | `tests/test_feature_coverage.py` |
 | BUG-03 | High (SEV-2) | Infrastructure / DB | Local MongoDB service on `localhost:27017` is not active | **Documented / Blocking** | Connection Probe | `Test-NetConnection` |
+| BUG-04 | Medium (SEV-3) | Infrastructure / RPC | Standalone Hardhat node on `127.0.0.1:8545` is not active | **Documented / Blocking** | Connection Probe | `Test-NetConnection` |
 
 ---
 
@@ -54,4 +55,17 @@ This document records all defects, security issues, configuration flaws, and imp
   2. Returns `TcpTestSucceeded : False`.
 - **Root Cause:** MongoDB service is offline in the local environment.
 - **Fix Required:** Start the local MongoDB service (`net start MongoDB` or launch `mongod`) prior to running database-dependent test suites.
+- **Current Status:** **Documented Blocker**.
+
+---
+
+### Bug ID: BUG-04 — Standalone Hardhat RPC Node Inactive
+- **Severity:** Medium (SEV-3 Blockage)
+- **Component:** Infrastructure / Local Blockchain JSON-RPC
+- **Summary:** TCP socket connection to `127.0.0.1:8545` failed. Standalone Hardhat development node (`npx hardhat node`) is not running.
+- **Reproduction Steps:**
+  1. Execute `Test-NetConnection -ComputerName 127.0.0.1 -Port 8545`.
+  2. Returns `TcpTestSucceeded : False`.
+- **Root Cause:** Standalone node process is stopped in development environment. Hardhat tests run against an in-process ephemeral network, but external REST consumers on `/api/blockchain/*` require the standalone RPC node.
+- **Fix Required:** Launch `npx hardhat node` in a background terminal when performing live backend-to-blockchain integration testing.
 - **Current Status:** **Documented Blocker**.

@@ -9,7 +9,8 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 | Checkpoint Identifier | Date & Time | Git Commit Hash / Backup Location | Trigger / Milestone | Test Results / Verification Status | Owner |
 |---|---|---|---|---|---|
 | `Checkpoint: Phase 1 — Complete` | 2026-10-11 11:13:49 | `a7fd89c403c235e6cb1d4e8e286b7e7b16103d7c` | Phase 1 Completion (Baseline Architecture) | All baseline criteria passed; Contract compile OK; Backend import OK | Coding Agent |
-| `Checkpoint: Phase 12 — Testing Audited` | 2026-10-11 11:35:00 | *(Working Tree Commit)* | Phase 12 Testing & Validation Execution | 7 tests passed, 6 blocked/xfailed, BUG-01 resolved; Phase status INCOMPLETE / BLOCKED | Coding Agent |
+| `Checkpoint: Phase 12 — Testing Audited` | 2026-10-11 11:35:00 | `9ccca4d` | Phase 12 Unit & Security Test Audit | 7 tests passed, 6 blocked/xfailed, BUG-01 resolved; Phase status INCOMPLETE / BLOCKED | Coding Agent |
+| `Checkpoint: Phase 12 — Integration Audited` | 2026-10-11 11:46:00 | *(Working Tree Commit)* | Phase 12 Integration & E2E Validation | 24 tests passed, 21 blocked/xfailed; 11-step E2E lifecycle audited; Phase status INCOMPLETE / BLOCKED | Coding Agent |
 
 ---
 
@@ -35,6 +36,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 
 ### Checkpoint: Phase 12 — Testing Audited
 - **Timestamp:** 2026-10-11 11:35:00 IST
+- **Git Commit:** `9ccca4d`
 - **Scope / Changes:**
   - Phase 12 test suite created: `backend/tests/` (`test_health.py`, `test_cors.py`, `test_security_baseline.py`, `test_feature_coverage.py`), `blockchain/test/EvidenceRegistry.test.js`.
   - Discovered and resolved BUG-01: Added authorized frontend port 5500 to CORS `origins` in `backend/app/main.py`.
@@ -46,4 +48,22 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
   - Probed MongoDB: Port 27017 inactive (BUG-03).
   - Identified Phase 2–11 feature implementation gaps (BUG-02).
 - **Status:** **INCOMPLETE / BLOCKED** (Phase 12 cannot be marked Complete until underlying features are implemented).
+- **Recorded By:** Coding Agent
+
+---
+
+### Checkpoint: Phase 12 — Integration Audited
+- **Timestamp:** 2026-10-11 11:46:00 IST
+- **Scope / Changes:**
+  - Component integration test suites created under `backend/tests/integration/`:
+    - `test_fastapi_mongodb.py`: Database isolation to `chainvault_test` and offline service resilience.
+    - `test_fastapi_blockchain.py`: Strict local RPC routing and offline node resilience.
+    - `test_frontend_fastapi.py`: Base URL consistency and zero client-side private key/secret leaks.
+    - `test_evidence_lifecycle.py`: 11-step end-to-end synthetic evidence lifecycle audit.
+  - Created [docs/testing/INTEGRATION_TEST_REPORT.md](file:///d:/parjaayi project/CHAINVAULT/docs/testing/INTEGRATION_TEST_REPORT.md).
+  - Updated [docs/testing/COVERAGE_MATRIX.md](file:///d:/parjaayi project/CHAINVAULT/docs/testing/COVERAGE_MATRIX.md), [docs/testing/TEST_REPORT.md](file:///d:/parjaayi project/CHAINVAULT/docs/testing/TEST_REPORT.md), [docs/testing/BUG_LOG.md](file:///d:/parjaayi project/CHAINVAULT/docs/testing/BUG_LOG.md).
+- **Verification Performed:**
+  - Automated tests executed: 45 tests (24 passed, 21 blocked/xfailed, 0 failed).
+  - Pre-test safety gate: Target DB `chainvault_test` verified, local RPC verified, zero client secrets verified.
+- **Status:** **INCOMPLETE / BLOCKED**
 - **Recorded By:** Coding Agent
