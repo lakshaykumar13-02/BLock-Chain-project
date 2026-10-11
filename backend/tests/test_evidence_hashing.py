@@ -13,7 +13,6 @@ def test_sha256_cryptographic_correctness():
     assert len(expected_digest) == 64
     assert isinstance(expected_digest, str)
 
-@pytest.mark.xfail(reason="BLOCKED: backend/app/services/hashing.py is a stub; calculate_hash function not yet implemented", strict=True)
 def test_hashing_service_module():
     """Verify hashing service module exports calculate_file_hash."""
     from app.services import hashing

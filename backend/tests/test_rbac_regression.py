@@ -1,6 +1,5 @@
 import pytest
 
-@pytest.mark.xfail(reason="BLOCKED: backend/app/security/permissions.py is a stub; UserRole Enum not yet implemented", strict=True)
 def test_all_four_roles_defined_in_permissions():
     """Requirement 3: Verify all four roles (ADMIN, INVESTIGATOR, ANALYST, VIEWER) are declared."""
     from app.security import permissions
@@ -11,7 +10,6 @@ def test_all_four_roles_defined_in_permissions():
     assert "ANALYST" in roles
     assert "VIEWER" in roles
 
-@pytest.mark.xfail(reason="BLOCKED: Role enforcement middleware/dependencies not yet mounted in FastAPI app", strict=True)
 def test_viewer_role_cannot_modify_evidence():
     """Requirement 3: Verify VIEWER role cannot perform state modifications."""
     from app.security import permissions

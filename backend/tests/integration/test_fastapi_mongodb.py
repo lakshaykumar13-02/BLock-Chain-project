@@ -23,7 +23,6 @@ def test_mongodb_graceful_handling_when_service_down():
         import asyncio
         asyncio.run(test_client.connect())
 
-@pytest.mark.xfail(reason="BLOCKED: /api/cases CRUD endpoints not implemented (Phase 4 stub)", strict=True)
 def test_fastapi_case_creation_and_retrieval_integration():
     """Requirement 2.A: FastAPI + MongoDB Case creation and retrieval."""
     response = client.post("/api/cases", json={"case_id": "CS-TEST-01", "title": "Synthetic Test Case"})

@@ -7,3 +7,4 @@ bcrypt
 pyjwt
 reportlab
 qrcode
+python-multipart

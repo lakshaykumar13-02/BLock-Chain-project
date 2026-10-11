@@ -4,7 +4,7 @@ import path from "path";
 
 async function main() {
   console.log("Starting deployment...");
-  
+
   const network = hre.network.name;
   console.log(`Deploying to network: ${network}`);
 
@@ -15,7 +15,7 @@ async function main() {
   const evidenceRegistry = await EvidenceRegistry.deploy();
 
   await evidenceRegistry.waitForDeployment();
-  
+
   const contractAddress = await evidenceRegistry.getAddress();
   const txHash = evidenceRegistry.deploymentTransaction().hash;
 
@@ -33,7 +33,7 @@ async function main() {
   }
 
   const artifact = await hre.artifacts.readArtifact("EvidenceRegistry");
-  
+
   const deploymentInfo = {
     contractName: "EvidenceRegistry",
     address: contractAddress,
@@ -48,7 +48,7 @@ async function main() {
     path.join(artifactsDir, `${network}_EvidenceRegistry.json`),
     JSON.stringify(deploymentInfo, null, 2)
   );
-  
+
   console.log(`Deployment artifact saved to deployments/${network}_EvidenceRegistry.json`);
 }
 

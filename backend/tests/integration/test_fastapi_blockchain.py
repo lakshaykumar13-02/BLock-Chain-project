@@ -30,7 +30,6 @@ def test_blockchain_rpc_graceful_handling_when_node_offline():
     # Standalone node is currently offline (probed via Test-NetConnection)
     assert node_online is False, "Hardhat node is offline; system must not falsely claim connectivity"
 
-@pytest.mark.xfail(reason="BLOCKED: backend/app/services/blockchain.py is a stub; register_evidence_on_chain not yet implemented", strict=True)
 def test_blockchain_service_integration_module():
     """Requirement 2.B: Verify blockchain service module exports registration and custody handlers."""
     from app.services import blockchain

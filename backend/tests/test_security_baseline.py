@@ -5,9 +5,9 @@ from app.main import app
 client = TestClient(app)
 
 def test_no_evidence_delete_endpoint():
-    """Requirement 3.B: Confirmation that no evidence-delete endpoint accidentally exists."""
     response = client.delete("/api/evidence/123")
-    assert response.status_code == 404
+    # Deletion must be rejected - either 404 (Not Found) or 405 (Method Not Allowed)
+    assert response.status_code in [404, 405]
 
 def test_no_hardcoded_env_file_committed():
     """Requirement 3.G: Secrets outside source control."""
