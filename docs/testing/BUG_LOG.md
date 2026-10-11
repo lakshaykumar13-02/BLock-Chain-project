@@ -10,7 +10,7 @@ This document records all defects, security issues, configuration flaws, and imp
 |---|---|---|---|---|---|---|
 | BUG-01 | Medium (SEV-3) | Backend CORS (`app/main.py`) | Authorized frontend port (5500) missing from CORS `origins` | **Resolved** | Automated Test | `tests/test_cors.py` |
 | BUG-02 | High (SEV-2) | System Architecture | Phases 2–11 feature implementations missing (routes and services were stubs) | **Resolved** | Integration Suite | `tests/integration/test_evidence_lifecycle.py` |
-| BUG-03 | High (SEV-2) | Infrastructure / DB | Local MongoDB Community Server not installed on host OS; port 27017 closed | **Documented (Mitigated & Isolated)** | System Audit & Probes | `tests/test_database_config.py` |
+| BUG-03 | High (SEV-2) | Infrastructure / DB | Local MongoDB Community Server not installed on host OS; port 27017 closed | **BLOCKED (Service Not Installed on Host OS)** | System Audit & Diagnostic Probes | `tests/test_database_config.py` |
 | BUG-04 | Medium (SEV-3) | Infrastructure / RPC | Standalone Hardhat node on `127.0.0.1:8545` was offline | **Resolved & Verified** | Live Node Verification | `scripts/verify_standalone_integration.js` |
 | BUG-05 | High (SEV-2) | Backend Security (`app/routes/*`) | Mutation routes lacked server-side RBAC dependencies | **Resolved** | Security Audit | `tests/test_api_contract_security.py` |
 | BUG-06 | Medium (SEV-3) | Frontend Auth (`frontend/js/auth.js`) | Login form omitted JWT token storage in sessionStorage | **Resolved** | Contract Audit | Manual & Frontend Client Suite |
@@ -58,12 +58,53 @@ This document records all defects, security issues, configuration flaws, and imp
 
 ---
 
-### Bug ID: BUG-03 — MongoDB Community Server Not Installed on Host OS
+### Bug ID: BUG-03 — MongoDB Community Server Not Installed on Host OS (Integration Blocker)
 - **Severity:** High (SEV-2 Blockage)
-- **Component:** Infrastructure / Host Operating System
-- **Summary:** TCP socket connection to `localhost:27017` failed. System-wide audit confirmed that MongoDB Community Server (`mongod.exe`) is not installed on the host OS (`where.exe mongod` not found, Windows Service not registered, standard directories absent).
-- **Mitigation & Safeguard Applied:** The application operates in an in-memory fallback state with strict test database safeguards (`safeguard_test_database`), guaranteeing 100% test isolation and zero possibility of overwriting development databases. Tests accurately report `XFAIL (BUG-03)` rather than falsely claiming physical daemon passes.
-- **Current Status:** **Documented (Mitigated & Isolated)**.
+- **Component:** Infrastructure / Host Operating System / Database Integration
+- **Summary:** TCP socket connection to `localhost:27017` failed. Exhaustive diagnostic audit confirmed that MongoDB Community Server (`mongod.exe`) is not installed on the host operating system. Port 27017 is closed, no Windows Service exists, no registry entries exist, and binary is missing from PATH.
+- **Diagnostic Execution & Evidence:**
+  1. **Socket & TCP Probe:**
+     - Command: `Test-NetConnection -ComputerName localhost -Port 27017`
+     - Result: `TcpTestSucceeded: False` (Exit code: 0). Port 27017 is closed and unresponsive.
+  2. **Active Listener Inspection:**
+     - Command: `netstat -ano | findstr 27017`
+     - Result: Empty output (Exit code: 1). No process or socket is bound to port 27017.
+  3. **Windows Service Control Manager Audit:**
+     - Command: `Get-Service -Name '*Mongo*'`
+     - Result: Empty output (Exit code: 0). No service named or containing "Mongo" is registered in Windows SCM.
+  4. **Executable Binary Search:**
+     - Command: `where.exe mongod`
+     - Result: `INFO: Could not find files for the given pattern(s)` (Exit code: 1). `mongod.exe` is absent from system and user `PATH`.
+  5. **Standard Installation Directories:**
+     - `Test-Path "C:\Program Files\MongoDB"` -> `False`
+     - `Test-Path "C:\Program Files (x86)\MongoDB"` -> `False`
+     - `Test-Path "C:\data\db"` -> `False`
+  6. **Windows Registry Uninstall Keys:**
+     - `HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*` -> 0 matches for `*Mongo*`
+     - `HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*` -> 0 matches for `*Mongo*`
+     - `HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*` -> 0 matches for `*Mongo*`
+  7. **Package Manager & Container Probes:**
+     - `Get-Package -Name "*Mongo*"` -> Exit code 1 (No package installed).
+     - `docker ps -a` -> Docker not installed on host.
+- **Safe Configuration Verification:**
+  - Automated tests strictly target `chainvault_test` via `backend/tests/conftest.py` (`os.environ["MONGO_DB_NAME"] = "chainvault_test"`).
+  - Runtime isolation fixture `enforce_test_database_isolation` asserts `MONGO_DB_NAME == "chainvault_test"` before test execution.
+  - [mongodb.py](file:///d:/parjaayi%20project/CHAINVAULT/backend/app/database/mongodb.py) implements `safeguard_test_database()`, raising `PermissionError` on any destructive operation against non-test databases.
+  - Tests use synthetic test records and isolated temporary evidence directories (`isolated_storage_dir`, `isolated_reports_dir`).
+  - Development database cannot be dropped, modified, or overwritten by tests.
+  - No secrets or credentials exposed.
+- **Service Restoration Assessment:**
+  - Because MongoDB Community Server is **not installed** on the host OS, the service cannot be started via Windows Service Manager or local command line.
+  - Per project instructions, MongoDB was not reinstalled, upgraded, or reconfigured unnecessarily.
+- **Minimum Required Action:**
+  - The host administrator / system owner must install MongoDB Community Server (v6.0+ or v7.0+) on the host Windows machine.
+  - Register the Windows Service `MongoDB` configured on port 27017 with data directory configured.
+  - Start the `MongoDB` service (`Start-Service -Name MongoDB`).
+- **Test Suite Handling:**
+  - The two integration tests requiring live daemon access ([test_live_mongodb_connection](file:///d:/parjaayi%20project/CHAINVAULT/backend/tests/test_database_config.py#L32) and [test_mongodb_graceful_handling_when_service_down](file:///d:/parjaayi%20project/CHAINVAULT/backend/tests/integration/test_fastapi_mongodb.py#L17)) are explicitly marked with `@pytest.mark.xfail(strict=True)`.
+  - Tests accurately report `XFAIL (BUG-03)` and are NOT counted as passed.
+  - In-memory fallback results are strictly distinguished from live MongoDB integration results.
+- **Current Status:** **BLOCKED (Service Not Installed on Host OS)**.
 
 ---
 
