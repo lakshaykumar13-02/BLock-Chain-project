@@ -25,5 +25,11 @@ def test_mongodb_graceful_handling_when_service_down():
 
 def test_fastapi_case_creation_and_retrieval_integration():
     """Requirement 2.A: FastAPI + MongoDB Case creation and retrieval."""
-    response = client.post("/api/cases", json={"case_id": "CS-TEST-01", "title": "Synthetic Test Case"})
+    login_res = client.post("/api/auth/login", json={"username": "investigator1", "password": "TestPassword123!"})
+    token = login_res.json()["access_token"]
+    response = client.post(
+        "/api/cases",
+        json={"case_id": "CS-TEST-01", "title": "Synthetic Test Case"},
+        headers={"Authorization": f"Bearer {token}"}
+    )
     assert response.status_code in [200, 201]

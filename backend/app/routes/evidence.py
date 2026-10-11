@@ -1,11 +1,13 @@
 import datetime
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException, status
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, status, Depends
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Optional
 
 from ..services.hashing import calculate_hash
 from ..services.storage import save_file, get_file_path
+from ..security.auth import get_current_user
+from ..security.permissions import require_role, UserRole
 
 router = APIRouter(prefix="/evidence", tags=["Evidence"])
 
@@ -28,12 +30,16 @@ async def upload_evidence(
     file: Optional[UploadFile] = File(None),
     case_id: Optional[str] = Form("CV-2026-001"),
     evidence_id: Optional[str] = Form(None),
-    custodian: Optional[str] = Form("investigator1")
+    custodian: Optional[str] = Form(None),
+    current_user: dict = Depends(require_role([UserRole.ADMIN, UserRole.INVESTIGATOR]))
 ):
     """
     Ingest forensic evidence, compute SHA-256 hash, and persist metadata.
+    Allowed roles: ADMIN, INVESTIGATOR.
     Evidence deletion is strictly forbidden to preserve immutable chain of custody.
     """
+    effective_custodian = custodian or current_user.get("username", "investigator1")
+
     if file is None:
         # Fallback for coverage tests verifying endpoint existence without multipart payload
         assigned_id = evidence_id or f"EV-{len(EVIDENCE_STORE) + 1:03d}"
@@ -46,7 +52,7 @@ async def upload_evidence(
             "file_hash": dummy_hash,
             "file_size": 0,
             "file_path": "",
-            "custodian": custodian or "investigator1",
+            "custodian": effective_custodian,
             "uploaded_at": now,
             "blockchain_registered": False,
             "blockchain_tx": None
@@ -69,7 +75,7 @@ async def upload_evidence(
         "file_hash": file_hash,
         "file_size": file_size,
         "file_path": file_path,
-        "custodian": custodian or "investigator1",
+        "custodian": effective_custodian,
         "uploaded_at": now,
         "blockchain_registered": False,
         "blockchain_tx": None
@@ -87,21 +93,21 @@ async def upload_evidence(
     }
 
 @router.get("", response_model=list[dict])
-async def list_evidence():
-    """List all ingested evidence records."""
+async def list_evidence(current_user: dict = Depends(get_current_user)):
+    """List all ingested evidence records. Allowed roles: All authenticated."""
     return list(EVIDENCE_STORE.values())
 
 @router.get("/{evidence_id}")
-async def get_evidence(evidence_id: str):
-    """Retrieve evidence record metadata by evidence_id."""
+async def get_evidence(evidence_id: str, current_user: dict = Depends(get_current_user)):
+    """Retrieve evidence record metadata by evidence_id. Allowed roles: All authenticated."""
     item = EVIDENCE_STORE.get(evidence_id)
     if not item:
         raise HTTPException(status_code=404, detail="Evidence not found")
     return item
 
 @router.get("/download/{filename:path}")
-async def download_evidence(filename: str):
-    """Download evidence file with path traversal defense."""
+async def download_evidence(filename: str, current_user: dict = Depends(get_current_user)):
+    """Download evidence file with path traversal defense. Allowed roles: All authenticated."""
     resolved_path = get_file_path(filename)
     if not resolved_path:
         raise HTTPException(status_code=404, detail="Evidence file not found")

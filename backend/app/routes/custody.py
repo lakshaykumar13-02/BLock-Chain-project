@@ -1,9 +1,11 @@
 import datetime
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from pydantic import BaseModel
 from typing import Optional
 
 from ..services.blockchain import transfer_custody_on_chain
+from ..security.auth import get_current_user
+from ..security.permissions import require_role, UserRole
 from .evidence import EVIDENCE_STORE
 
 router = APIRouter(prefix="/custody", tags=["Chain of Custody"])
@@ -17,18 +19,22 @@ class CustodyTransferRequest(BaseModel):
     reason: Optional[str] = "Forensic analysis transfer"
 
 @router.post("/transfer", status_code=status.HTTP_200_OK)
-async def transfer_custody(req: CustodyTransferRequest):
+async def transfer_custody(
+    req: CustodyTransferRequest,
+    current_user: dict = Depends(require_role([UserRole.ADMIN, UserRole.INVESTIGATOR]))
+):
     """
     Execute chain-of-custody transfer.
+    Allowed roles: ADMIN, INVESTIGATOR.
     Updates active custodian, logs to immutable audit trail, and records on-chain.
     """
     ev_id = req.evidence_id or "EV-001"
     new_custodian = req.new_custodian or "officer2"
     reason = req.reason or "Custody handover"
 
-    prev_custodian = "investigator1"
+    prev_custodian = current_user.get("username", "investigator1")
     if ev_id in EVIDENCE_STORE:
-        prev_custodian = EVIDENCE_STORE[ev_id].get("custodian", "investigator1")
+        prev_custodian = EVIDENCE_STORE[ev_id].get("custodian", prev_custodian)
         EVIDENCE_STORE[ev_id]["custodian"] = new_custodian
 
     # On-chain transfer
@@ -58,6 +64,9 @@ async def transfer_custody(req: CustodyTransferRequest):
     }
 
 @router.get("/history/{evidence_id}")
-async def get_custody_history(evidence_id: str):
-    """Retrieve complete custody log history for an evidence item."""
+async def get_custody_history(
+    evidence_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Retrieve complete custody log history for an evidence item. Allowed roles: All authenticated."""
     return AUDIT_LOGS_STORE.get(evidence_id, [])

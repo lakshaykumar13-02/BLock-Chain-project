@@ -13,6 +13,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 | `Checkpoint: Phase 12 — Integration Audited` | 2026-10-11 11:46:00 | `7dbdeb1` | Phase 12 Integration & E2E Validation | 24 tests passed, 21 blocked/xfailed; 11-step E2E lifecycle audited; Phase status INCOMPLETE / BLOCKED | Coding Agent |
 | `Checkpoint: Phase 12 — Regression Verified` | 2026-10-11 11:52:00 | `5363f85` | Phase 12 Regression Testing & Bug Verification | 47 automated tests (24 passed, 23 blocked, 0 regressions, 0 failed); Phase status INCOMPLETE / BLOCKED | Coding Agent |
 | `Checkpoint: Phase 12 — Blockers Resolved` | 2026-10-11 12:15:00 | eca6555 | Phase 12 9-Step Blocker Resolution | 46 automated tests passed (40 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); All 9 blockers BLK-01 to BLK-09 resolved | Coding Agent |
+| `Checkpoint: Phase 12 — API Contract & Routes Verified` | 2026-10-11 12:40:00 | 2484caf | Phase 12 API Contract & Route Consistency Audit | 54 automated tests passed (48 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); All 4 layers aligned; Server-side RBAC verified | Coding Agent |
 
 ---
 
@@ -109,4 +110,25 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
   - Blockchain test suite: 6 passed, 0 failed (`EvidenceRegistry.test.js`).
   - Evidence lifecycle suite: 11/11 passed (100%).
 - **Status:** **WORKFLOW VERIFIED — 9/9 BLOCKERS RESOLVED**
+- **Recorded By:** Coding Agent
+
+---
+
+### Checkpoint: Phase 12 — API Contract & Routes Verified
+- **Timestamp:** 2026-10-11 12:40:00 IST
+- **Git Commit:** `2484caf`
+- **Scope / Changes:**
+  - Audited all 4 architectural layers: FastAPI backend routes & Pydantic schemas, Frontend requests (`api.js`, `auth.js`, `dashboard.js`), Blockchain service & Solidity smart contracts (`EvidenceRegistry.sol`), and automated tests and documentation.
+  - Implemented server-side RBAC dependencies (`require_role([ADMIN, INVESTIGATOR])`) on mutation routes across `cases.py`, `evidence.py`, `blockchain.py`, `custody.py`, and `reports.py`.
+  - Added frontend auth helper `loginUser()` to `frontend/js/api.js` and updated `handleLogin()` in `frontend/js/auth.js` to persist `access_token` in `sessionStorage` with error handling.
+  - Auth token propagation integrated into integration and lifecycle tests.
+  - Created automated security regression suite `backend/tests/test_api_contract_security.py` (8 tests: missing token, invalid token, expired token, VIEWER mutation rejection, INVESTIGATOR access, ADMIN soft deletion, zero credential leakage, evidence immutability).
+  - Created comprehensive API deliverables: `docs/api/ENDPOINT_INVENTORY.md` (20 FastAPI routes + 6 Solidity functions) and `docs/api/API_CONTRACT_AUDIT.md`.
+  - Updated `docs/testing/COVERAGE_MATRIX.md`, `docs/testing/TEST_REPORT.md`, `docs/testing/BUG_LOG.md`.
+- **Verification Performed:**
+  - Backend test suite: 48 passed, 2 xfailed (known BUG-03 offline MongoDB daemon), 0 failed.
+  - Blockchain test suite: 6 passed, 0 failed.
+  - Lifecycle integration: 11/11 passed (100%).
+  - API Contract security suite: 8/8 passed (100%).
+- **Status:** **API CONTRACT & ROUTES VERIFIED — SERVER-SIDE RBAC ENFORCED**
 - **Recorded By:** Coding Agent

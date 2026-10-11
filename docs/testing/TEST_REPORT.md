@@ -28,7 +28,7 @@ The following runtime tools and versions were physically detected on the host en
 ## 2. Test Execution Commands & Verified Results
 
 ### Automated Commands Executed:
-1. `cd backend && .\venv\Scripts\pytest -v` (42 tests: unit, security, integration, lifecycle)
+1. `cd backend && .\venv\Scripts\pytest -v` (50 tests: unit, security, integration, lifecycle, API contract security)
 2. `cd blockchain && npx hardhat test` (6 tests: deployment, signers, registration, custody, verification, duplicates)
 3. `cd blockchain && npx hardhat compile` (Compiled 1 Solidity file successfully)
 4. Port probes: `localhost:27017` (MongoDB) and `127.0.0.1:8545` (Hardhat RPC)
@@ -37,11 +37,11 @@ The following runtime tools and versions were physically detected on the host en
 
 | Category | Automated Tests | Probed / Static Checks | Total Verified |
 |---|---|---|---|
-| **Passed** | 46 (40 Backend + 6 Blockchain) | 5 (Compile, Git, Probes, Assets) | **51** |
+| **Passed** | 54 (48 Backend + 6 Blockchain) | 5 (Compile, Git, Probes, Assets) | **59** |
 | **Failed** | 0 | 0 | **0** |
 | **Blocked / XFailed** | 2 (Backend tests requiring live MongoDB daemon) | 0 | **2** |
 | **Skipped** | 0 | 0 | **0** |
-| **Total Test Items** | **48** | **5** | **53** |
+| **Total Test Items** | **56** | **5** | **61** |
 
 ---
 
@@ -93,6 +93,16 @@ The following runtime tools and versions were physically detected on the host en
 - **Role-Based Access Control Definitions:** **Passed** (All 4 roles defined in `permissions.py`).
 - **Bcrypt Password Security Module:** **Passed** (Password hashing & verification operational).
 
+### E. API Contract & Security Enforcement (8 Passed, 0 Failed)
+- **Missing Token Rejection:** **Passed** (`POST /api/cases`, `/api/evidence/upload`, `/api/blockchain/register` reject missing Authorization header with 401).
+- **Invalid Token Rejection:** **Passed** (Malformed Bearer token returns 401 Unauthorized).
+- **Expired Token Rejection:** **Passed** (Expired JWT token returns 401 Unauthorized).
+- **Role Enforcement (VIEWER):** **Passed** (Read-only VIEWER rejected with 403 Forbidden on state mutations).
+- **Role Enforcement (INVESTIGATOR):** **Passed** (INVESTIGATOR permitted to create cases and upload evidence).
+- **Role Enforcement (ADMIN):** **Passed** (ADMIN permitted to soft-delete cases).
+- **Zero Credential Leakage:** **Passed** (Responses from `/api/cases` and `/api/evidence/*` omit secrets, password hashes, and private keys).
+- **Evidence Immutability / No Deletion:** **Passed** (Admin attempt to delete evidence rejected with 405 Method Not Allowed / 404).
+
 ---
 
 ## 4. Defects Discovered & Resolution Status
@@ -103,6 +113,8 @@ The following runtime tools and versions were physically detected on the host en
 | **BUG-02** | Phases 2–11 workflow routes missing in backend | Routes & Services | **Resolved (9/9 Blockers)** |
 | **BUG-03** | Local MongoDB service inactive on port 27017 | Host Environment | **Documented (Resilient Fallback Active)** |
 | **BUG-04** | Standalone Hardhat node offline on port 8545 | Host Environment | **Documented (Hardhat In-Process Active)** |
+| **BUG-05** | Missing server-side role enforcement on state mutation routes | `backend/app/routes/*` | **Resolved (Verified in Security Suite)** |
+| **BUG-06** | Frontend `auth.js` form submission lacked JWT token persistence | `frontend/js/auth.js` | **Resolved (Verified in Client Suite)** |
 
 ---
 

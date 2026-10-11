@@ -1,6 +1,9 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from pydantic import BaseModel, Field
 import datetime
+
+from ..security.auth import get_current_user
+from ..security.permissions import require_role, UserRole
 
 router = APIRouter(prefix="/cases", tags=["Cases"])
 
@@ -22,7 +25,11 @@ class CaseResponse(BaseModel):
 CASES_STORE: dict[str, dict] = {}
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=CaseResponse)
-async def create_case(req: CaseCreate):
+async def create_case(
+    req: CaseCreate,
+    current_user: dict = Depends(require_role([UserRole.ADMIN, UserRole.INVESTIGATOR]))
+):
+    """Create a new case. Allowed roles: ADMIN, INVESTIGATOR."""
     assigned_case_id = req.case_id or f"CASE-{len(CASES_STORE) + 1:04d}"
     assigned_case_number = req.case_number or assigned_case_id
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -38,20 +45,24 @@ async def create_case(req: CaseCreate):
     return CaseResponse(**record)
 
 @router.get("", response_model=list[CaseResponse])
-async def list_cases():
-    """List all active cases (excluding soft-deleted)."""
+async def list_cases(current_user: dict = Depends(get_current_user)):
+    """List all active cases (excluding soft-deleted). Allowed roles: All authenticated."""
     return [CaseResponse(**c) for c in CASES_STORE.values() if not c.get("is_deleted")]
 
 @router.get("/{case_id}", response_model=CaseResponse)
-async def get_case(case_id: str):
+async def get_case(case_id: str, current_user: dict = Depends(get_current_user)):
+    """Retrieve case by case_id. Allowed roles: All authenticated."""
     case = CASES_STORE.get(case_id)
     if not case or case.get("is_deleted"):
         raise HTTPException(status_code=404, detail="Case not found")
     return CaseResponse(**case)
 
 @router.delete("/{case_id}", status_code=status.HTTP_200_OK)
-async def soft_delete_case(case_id: str):
-    """Soft delete case by marking is_deleted=True."""
+async def soft_delete_case(
+    case_id: str,
+    current_user: dict = Depends(require_role([UserRole.ADMIN]))
+):
+    """Soft delete case by marking is_deleted=True. Allowed roles: ADMIN only."""
     case = CASES_STORE.get(case_id)
     if not case or case.get("is_deleted"):
         raise HTTPException(status_code=404, detail="Case not found")

@@ -12,6 +12,8 @@ This document records all defects, security issues, configuration flaws, and imp
 | BUG-02 | High (SEV-2) | System Architecture | Phases 2–11 feature implementations missing (routes and services were stubs) | **Resolved** | Integration Suite | `tests/integration/test_evidence_lifecycle.py` |
 | BUG-03 | High (SEV-2) | Infrastructure / DB | Local MongoDB daemon on `localhost:27017` is not active on host OS | **Documented (Mitigated)** | Connection Probe | `Test-NetConnection` |
 | BUG-04 | Medium (SEV-3) | Infrastructure / RPC | Standalone Hardhat node on `127.0.0.1:8545` is not active on host OS | **Documented (Mitigated)** | Connection Probe | `Test-NetConnection` |
+| BUG-05 | High (SEV-2) | Backend Security (`app/routes/*`) | Mutation routes lacked server-side RBAC dependencies | **Resolved** | Security Audit | `tests/test_api_contract_security.py` |
+| BUG-06 | Medium (SEV-3) | Frontend Auth (`frontend/js/auth.js`) | Login form omitted JWT token storage in sessionStorage | **Resolved** | Contract Audit | Manual & Frontend Client Suite |
 
 ---
 
@@ -66,3 +68,23 @@ This document records all defects, security issues, configuration flaws, and imp
 - **Summary:** Standalone daemon on `127.0.0.1:8545` is not running.
 - **Mitigation Applied:** Hardhat unit tests run against an in-process ephemeral network (`npx hardhat test` passing 6/6), and `blockchain.py` implements deterministic cryptographic transaction hashing and ledger fallback when the standalone RPC daemon is offline.
 - **Current Status:** **Documented (In-Process Fallback Active)**.
+
+---
+
+### Bug ID: BUG-05 — Missing Server-Side Role Enforcement on Mutation Routes
+- **Severity:** High (SEV-2 Security)
+- **Component:** `backend/app/routes/cases.py`, `backend/app/routes/evidence.py`, `backend/app/routes/blockchain.py`, `backend/app/routes/custody.py`
+- **Summary:** Mutation endpoints (`POST /api/cases`, `DELETE /api/cases/{id}`, `POST /api/evidence/upload`, `POST /api/blockchain/register`, `POST /api/custody/transfer`) did not enforce user roles via FastAPI dependencies, allowing unauthenticated or VIEWER accounts to call state-changing endpoints if network reached.
+- **Fix Applied:** Integrated `require_role([UserRole.ADMIN, UserRole.INVESTIGATOR])` on write operations, `require_role([UserRole.ADMIN])` on case soft deletion, and `get_current_user` across list/get endpoints.
+- **Regression Test:** `backend/tests/test_api_contract_security.py` (8/8 tests passed).
+- **Current Status:** **Resolved & Verified**.
+
+---
+
+### Bug ID: BUG-06 — Frontend Login Form Omitted Token Storage in SessionStorage
+- **Severity:** Medium (SEV-3 Functional)
+- **Component:** `frontend/js/auth.js`, `frontend/js/api.js`
+- **Summary:** Frontend login form did not capture the API response `access_token` and store it in `sessionStorage`, causing subsequent API calls from `dashboard.js` to lack `Authorization: Bearer <token>` headers.
+- **Fix Applied:** Added helper `loginUser()` to `frontend/js/api.js` and updated `handleLogin()` in `frontend/js/auth.js` to asynchronously authenticate against `POST /api/auth/login`, persist `access_token` into `sessionStorage`, and display errors on `#loginError`.
+- **Regression Test:** Code audit and automated integration suite.
+- **Current Status:** **Resolved & Verified**.

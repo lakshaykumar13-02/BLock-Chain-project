@@ -1,14 +1,19 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from ..security.auth import get_current_user
+from ..security.permissions import require_role, UserRole
 from .custody import AUDIT_LOGS_STORE
 from .evidence import EVIDENCE_STORE
 
 router = APIRouter(prefix="/audit", tags=["Audit Logs"])
 
 @router.get("/logs/{evidence_id}")
-async def get_evidence_audit_logs(evidence_id: str):
+async def get_evidence_audit_logs(
+    evidence_id: str,
+    current_user: dict = Depends(get_current_user)
+):
     """
     Retrieve forensic audit and chain-of-custody logs for a specific evidence item.
-    Always returns HTTP 200 with existing or newly created audit records.
+    Allowed roles: All authenticated.
     """
     logs = AUDIT_LOGS_STORE.get(evidence_id, [])
 
@@ -46,8 +51,10 @@ async def get_evidence_audit_logs(evidence_id: str):
     }
 
 @router.get("/all")
-async def get_all_audit_logs():
-    """Retrieve all audit logs across all cases."""
+async def get_all_audit_logs(
+    current_user: dict = Depends(require_role([UserRole.ADMIN, UserRole.INVESTIGATOR]))
+):
+    """Retrieve all audit logs across all cases. Allowed roles: ADMIN, INVESTIGATOR."""
     all_logs = []
     for ev_id, logs in AUDIT_LOGS_STORE.items():
         all_logs.extend(logs)

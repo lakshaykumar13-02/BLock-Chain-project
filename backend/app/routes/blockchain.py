@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from pydantic import BaseModel
 from typing import Optional
 
@@ -7,6 +7,8 @@ from ..services.blockchain import (
     get_evidence_from_chain,
     check_blockchain_health
 )
+from ..security.auth import get_current_user
+from ..security.permissions import require_role, UserRole
 from .evidence import EVIDENCE_STORE
 
 router = APIRouter(prefix="/blockchain", tags=["Blockchain"])
@@ -17,8 +19,14 @@ class BlockchainRegisterRequest(BaseModel):
     case_id: Optional[str] = "CV-2026-001"
 
 @router.post("/register", status_code=status.HTTP_200_OK)
-async def register_evidence(req: BlockchainRegisterRequest):
-    """Register evidence cryptographic hash on the local Ethereum blockchain."""
+async def register_evidence(
+    req: BlockchainRegisterRequest,
+    current_user: dict = Depends(require_role([UserRole.ADMIN, UserRole.INVESTIGATOR]))
+):
+    """
+    Register evidence cryptographic hash on the local Ethereum blockchain.
+    Allowed roles: ADMIN, INVESTIGATOR.
+    """
     receipt = register_evidence_on_chain(
         evidence_id=req.evidence_id,
         file_hash=req.hash,
@@ -40,7 +48,7 @@ async def register_evidence(req: BlockchainRegisterRequest):
 
 @router.get("/status")
 async def blockchain_status():
-    """Check status and connectivity of local blockchain service."""
+    """Check status and connectivity of local blockchain service. Public."""
     online = check_blockchain_health()
     return {
         "status": "online" if online else "offline",
@@ -49,8 +57,11 @@ async def blockchain_status():
     }
 
 @router.get("/evidence/{evidence_id}")
-async def get_blockchain_evidence(evidence_id: str):
-    """Retrieve evidence record recorded on the blockchain ledger."""
+async def get_blockchain_evidence(
+    evidence_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Retrieve evidence record recorded on the blockchain ledger. Allowed roles: All authenticated."""
     record = get_evidence_from_chain(evidence_id)
     if not record:
         raise HTTPException(status_code=404, detail="Evidence not found on blockchain")

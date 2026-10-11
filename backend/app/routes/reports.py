@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Response, HTTPException, status
+from fastapi import APIRouter, Response, HTTPException, status, Depends
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Optional
 import os
 
 from ..services.report import generate_qr_image, generate_pdf_report, get_reports_dir
+from ..security.auth import get_current_user
+from ..security.permissions import require_role, UserRole
 from .cases import CASES_STORE
 from .evidence import EVIDENCE_STORE
 from .custody import AUDIT_LOGS_STORE
@@ -19,18 +21,23 @@ class ReportGenerateRequest(BaseModel):
 async def get_evidence_qr(evidence_id: str):
     """
     Generate and stream tamper-evident QR verification code for an evidence record.
+    Publicly accessible for physical forensic tags and mobile verification badges.
     Returns HTTP 200 with image/png MIME type.
     """
     png_bytes = generate_qr_image(evidence_id)
     return Response(content=png_bytes, media_type="image/png", status_code=status.HTTP_200_OK)
 
 @router.post("/generate", status_code=status.HTTP_200_OK)
-async def generate_forensic_report(req: ReportGenerateRequest):
+async def generate_forensic_report(
+    req: ReportGenerateRequest,
+    current_user: dict = Depends(require_role([UserRole.ADMIN, UserRole.INVESTIGATOR, UserRole.ANALYST]))
+):
     """
     Generate tamper-evident, signed forensic PDF report containing:
     - Case details
     - Registered evidence items with cryptographic SHA-256 digests
     - Complete chain-of-custody transfer history
+    Allowed roles: ADMIN, INVESTIGATOR, ANALYST.
     """
     cid = req.case_id or "CV-2026-001"
 
@@ -63,8 +70,11 @@ async def generate_forensic_report(req: ReportGenerateRequest):
     }
 
 @router.get("/download/{filename}")
-async def download_report(filename: str):
-    """Download generated forensic report PDF."""
+async def download_report(
+    filename: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Download generated forensic report PDF. Allowed roles: All authenticated."""
     reports_dir = get_reports_dir()
     file_path = reports_dir / filename
     if not file_path.exists() or not file_path.is_file():

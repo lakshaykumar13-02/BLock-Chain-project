@@ -13,6 +13,8 @@ def test_lifecycle_step_01_authenticate():
     """Step 1: Authenticate as an authorized investigator user."""
     res = client.post("/api/auth/login", json={"username": "investigator1", "password": "TestPassword123!"})
     assert res.status_code == 200
+    token = res.json()["access_token"]
+    client.headers["Authorization"] = f"Bearer {token}"
 
 def test_lifecycle_step_02_create_case():
     """Step 2: Create a case record."""
