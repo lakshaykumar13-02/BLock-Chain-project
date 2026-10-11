@@ -27,15 +27,14 @@ def test_database_collections_declared():
     assert "audit_logs" in client.db
     assert "reports" in client.db
 
-@pytest.mark.xfail(reason="BLOCKED: Local MongoDB daemon on port 27017 is offline (BUG-03)", strict=True)
-@pytest.mark.asyncio
-async def test_live_mongodb_connection():
+def test_live_mongodb_connection():
     """Requirement 3 & 13: Probe live connection to MongoDB test database."""
-    client = MongoDBClient()
-    client.db_name = "chainvault_test"
-    # Attempt connection with a short 2-second timeout
-    await client.connect()
-    # Ping the database to verify active connection
-    pong = await client.client.admin.command('ping')
-    assert pong.get('ok') == 1.0
-    await client.close()
+    import asyncio
+    async def _test():
+        client = MongoDBClient()
+        client.db_name = "chainvault_test"
+        await client.connect()
+        pong = await client.client.admin.command('ping')
+        assert pong.get('ok') == 1.0
+        await client.close()
+    asyncio.run(_test())

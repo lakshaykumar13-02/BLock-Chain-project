@@ -19,6 +19,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 | `Checkpoint: Phase 12 — Complete & Verified` | 2026-10-11 13:25:00 | a598c23 | Phase 12 Final Acceptance Testing & Closure | 98 passed, 2 xfailed, 0 failed (100 total items); All 13 REQs verified; 0 remaining blockers | Coding Agent |
 | `Checkpoint: Phase 12 — Real-Service Integration Verified` | 2026-10-11 14:00:00 | 2dca6a6 | Phase 12 Real-Service Integration Verification | Standalone Hardhat node live verified on port 8545; MongoDB host absence documented | Coding Agent |
 | `Checkpoint: Phase 12 — MongoDB Integration Diagnostic & Blocker Audit` | 2026-10-11 14:25:00 | `8c0ce63` | Phase 12 MongoDB Blocker Resolution Audit | Exhaustive diagnostic confirms MongoDB not installed on host OS; Tests safe; Status BLOCKED / INCOMPLETE | Coding Agent |
+| `Checkpoint: Phase 12 — Real MongoDB Integration Resolved & Complete` | 2026-10-11 16:45:00 | `0c0830e` | Phase 12 Real MongoDB Integration Complete | MongoDB Community Server running as Windows service; Live ping, CRUD, indexes, and cleanup verified (101/101 tests passed) | Coding Agent |
 
 ---
 
@@ -249,4 +250,28 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
   - Pytest suite: 92 passed, 2 xfailed, exit code 0 (`.\venv\Scripts\pytest`).
   - Hardhat standalone suite: 6 passed on `--network localhost` (`npx hardhat test --network localhost`).
 - **Status:** **INCOMPLETE — Real MongoDB Integration BLOCKED**
+- **Recorded By:** Coding Agent
+
+---
+
+### Checkpoint: Phase 12 — Real MongoDB Integration Resolved & Complete
+- **Timestamp:** 2026-10-11 16:45:00 IST
+- **Git Commit:** `0c0830e`
+- **Scope / Changes:**
+  - MongoDB Community Server verified installed and running on port 27017 as Windows Service `MongoDB` (`TcpTestSucceeded: True`).
+  - Executed live database integration tests targeting `chainvault_test`:
+    - Live connection and ping (`admin.command('ping')`) verified (`pong.ok == 1.0`).
+    - Unique index creation on `evidence_id` in collection `evidence` verified.
+    - Full CRUD lifecycle (insert synthetic document, query, update status, delete) verified with isolated cleanup (`deleted_count == 1`).
+    - Graceful error handling for unreachable MongoDB endpoints verified (`ServerSelectionTimeoutError`).
+    - End-to-end FastAPI case creation and retrieval verified.
+  - Hardhat standalone node live verification: 6/6 tests passed on `--network localhost` and 5/5 lifecycle steps verified via `verify_standalone_integration.js`.
+  - Reconciled full acceptance suites: 95 Backend tests + 6 Blockchain tests = 101/101 passed (100%), 0 failed, 0 xfailed, 0 skipped.
+  - Resolved BUG-03 and updated all audit reports (`BUG_LOG.md`, `TEST_REPORT.md`, `TEST_EVIDENCE_TRACEABILITY.md`, and `CHANGELOG.md`).
+- **Verification Performed:**
+  - `Get-Service -Name MongoDB` -> Running
+  - `.\venv\Scripts\pytest.exe -v` -> 95 passed, 0 failed in 27s.
+  - `npx hardhat test --network localhost` -> 6 passed in 2s.
+  - `npx hardhat run scripts/verify_standalone_integration.js --network localhost` -> 100% successful.
+- **Status:** **COMPLETE — ALL REAL SERVICES VERIFIED (101/101 TESTS PASSED)**
 - **Recorded By:** Coding Agent
