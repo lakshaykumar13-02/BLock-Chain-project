@@ -1,6 +1,6 @@
 # ChainVault — Test Cases Specification
 
-This document details all test cases defined for Phase 12 validation in accordance with the **ChainVault Test Execution Plan**.
+This document details all test cases defined for Phase 12 validation in accordance with the **ChainVault Test Execution Plan** and **Coverage Matrix** (`docs/testing/COVERAGE_MATRIX.md`).
 
 ---
 
@@ -10,7 +10,9 @@ This document details all test cases defined for Phase 12 validation in accordan
 |---|---|---|---|---|---|
 | TC-BACK-01 | Health Check Endpoint | `/api/health` | Automated (`pytest`) | Returns HTTP 200 with `status: "ok"` | **Passed** |
 | TC-BACK-02 | Unmapped Route 404 Handling | `/api/nonexistent` | Automated (`pytest`) | Returns HTTP 404 Not Found | **Passed** |
-| TC-BACK-03 | MongoDB Service Connectivity | Port 27017 | PowerShell `Test-NetConnection` | Active TCP socket connection on port 27017 | **Blocked** (Service not running) |
+| TC-DB-01 | MongoDB Client Config Defaults | `MongoDBClient` | Automated (`pytest`) | Client uri and database names correctly defaulted | **Passed** |
+| TC-DB-02 | Database Collections Declared | `MongoDBClient` | Automated (`pytest`) | Users, cases, evidence, custody, audit, reports declared | **Passed** |
+| TC-DB-03 | Live MongoDB Test Connection | `chainvault_test` | Automated (`pytest`) | Connects to isolated test DB and pings admin | **Blocked** (Service offline - BUG-03) |
 | TC-BACK-04 | User Authentication & JWT Login | `/api/auth/login` | Automated (`pytest`) | Valid credentials return JWT; invalid return 401 | **Blocked** (Route unmapped stub) |
 | TC-BACK-05 | Case Creation & Metadata | `/api/cases` | Automated (`pytest`) | Valid payload persists case; returns 201 | **Blocked** (Route unmapped stub) |
 | TC-BACK-06 | Case Soft Deletion & Query Filter | `/api/cases/{id}` | Automated (`pytest`) | Deleted case marked inactive, excluded from normal queries | **Blocked** (Route unmapped stub) |
@@ -18,14 +20,16 @@ This document details all test cases defined for Phase 12 validation in accordan
 
 ---
 
-## Group B: Evidence Management
+## Group B: Evidence Management & Cryptography
 
 | Test Case ID | Test Name | Target Component | Method / Suite | Expected Result | Status |
 |---|---|---|---|---|---|
 | TC-EVID-01 | Confirmation of No Delete Endpoint | `/api/evidence/{id}` | Automated (`pytest`) | HTTP DELETE returns 404 (No delete endpoint exists) | **Passed** |
-| TC-EVID-02 | Evidence Upload & SHA-256 Storage | `/api/evidence/upload` | Automated (`pytest`) | File accepted, SHA-256 calculated & stored in DB | **Blocked** (Route unmapped stub) |
-| TC-EVID-03 | Duplicate Hash Handling | `/api/evidence/upload` | Automated (`pytest`) | Identical hash detected and flagged/handled | **Blocked** (Route unmapped stub) |
 | TC-EVID-04 | Storage Directory Traversal Defense | `/api/evidence/download/..` | Automated (`pytest`) | Traversals rejected with 404 / 400 | **Passed** |
+| TC-EVID-05 | SHA-256 Cryptographic Correctness | `hashlib.sha256` | Automated (`pytest`) | Computes exact 64-char hex digest on test vectors | **Passed** |
+| TC-EVID-06 | Hashing Service Module Exports | `services/hashing.py` | Automated (`pytest`) | Module exposes `calculate_hash` function | **Blocked** (Service is stub) |
+| TC-EVID-02 | Evidence Upload & Storage | `/api/evidence/upload` | Automated (`pytest`) | File accepted, SHA-256 calculated & stored in DB | **Blocked** (Route unmapped stub) |
+| TC-EVID-03 | Duplicate Hash Handling | `/api/evidence/upload` | Automated (`pytest`) | Identical hash detected and flagged/handled | **Blocked** (Route unmapped stub) |
 
 ---
 
@@ -33,11 +37,13 @@ This document details all test cases defined for Phase 12 validation in accordan
 
 | Test Case ID | Test Name | Target Component | Method / Suite | Expected Result | Status |
 |---|---|---|---|---|---|
-| TC-BC-01 | Contract Compilation | `EvidenceRegistry.sol` | Hardhat (`compile`) | Clean compilation with zero Solidity errors | **Passed** |
-| TC-BC-02 | Contract Deployer Admin Verification | `EvidenceRegistry.sol` | Hardhat (`test`) | Deployer address matches `admin` state variable | **Passed** |
-| TC-BC-03 | Evidence Registration on Chain | `EvidenceRegistry.sol` | Hardhat (`test`) | `registerEvidence` emits event & records hash | **Blocked** (Contract is Phase 1 skeleton) |
-| TC-BC-04 | Duplicate Evidence Registration Rejection| `EvidenceRegistry.sol` | Hardhat (`test`) | Contract reverts on re-registering existing evidence ID | **Blocked** (Contract is Phase 1 skeleton) |
-| TC-BC-05 | Zero Private Key Leakage | Backend & Frontend | Static audit | No private keys present in DB or client bundles | **Passed** |
+| TC-BC-01 | Contract Deployer Admin Verification | `EvidenceRegistry.sol` | Hardhat (`test`) | Deployer address matches `admin` state variable | **Passed** |
+| TC-BC-02 | Local Network Test Accounts | Hardhat Signers | Hardhat (`test`) | Multiple isolated accounts available for testing | **Passed** |
+| TC-BC-03 | Contract Register Function Check | `EvidenceRegistry.sol` | Hardhat (`test`) | Audits presence of `registerEvidence` function | **Passed (Gap Confirmed)** |
+| TC-BC-04 | Contract Transfer Function Check | `EvidenceRegistry.sol` | Hardhat (`test`) | Audits presence of `transferCustody` function | **Passed (Gap Confirmed)** |
+| TC-BC-05 | Contract Verify Function Check | `EvidenceRegistry.sol` | Hardhat (`test`) | Audits presence of `verifyEvidence` function | **Passed (Gap Confirmed)** |
+| TC-BC-06 | Duplicate Evidence Registration Reversion| `EvidenceRegistry.sol` | Hardhat (`test`) | Contract reverts on re-registering existing evidence ID | **Blocked** (Contract is skeleton) |
+| TC-BC-07 | Zero Private Key Leakage | Backend & Frontend | Static audit | No private keys present in DB or client bundles | **Passed** |
 
 ---
 
@@ -71,13 +77,16 @@ This document details all test cases defined for Phase 12 validation in accordan
 
 ---
 
-## Group G: Security & Secrets
+## Group G: Security, Configuration & Audit
 
 | Test Case ID | Test Name | Target Component | Method / Suite | Expected Result | Status |
 |---|---|---|---|---|---|
 | TC-SEC-01 | Exclude `.env` from Version Control | Git status / filesystem | Automated (`pytest`) | Real `.env` not tracked; only safe `.env.example` committed | **Passed** |
-| TC-SEC-02 | CORS Header Restrictions | `app/main.py` | Automated audit | CORS limited to authorized frontend origins (5500, 8000) | **Defect Identified** (5500 missing from CORS origins in `main.py`) |
-| TC-SEC-03 | JWT Signing Expiration Validation | `security/auth.py` | Automated (`pytest`) | Expired tokens rejected with HTTP 401 | **Blocked** (Auth stub) |
+| TC-SEC-02 | CORS Header Restrictions | `app/main.py` | Automated (`pytest`) | CORS allows port 5500; blocks unauthorized origins | **Passed** |
+| TC-SEC-04 | Configuration Schema Completeness | `.env.example` | Automated (`pytest`) | All 7 mandatory keys present without real secrets | **Passed** |
+| TC-SEC-05 | Git Ignore Storage & Reports Protection| `.gitignore` | Automated (`pytest`) | Rules protect `storage/evidence/*` and `generated_reports/*` | **Passed** |
+| TC-SEC-06 | Password Hashing Module Check | `security/password.py` | Automated (`pytest`) | Exposes `hash_password` and `verify_password` | **Blocked** (Security stub) |
+| TC-SEC-07 | JWT Expiration Enforcement | `security/auth.py` | Automated (`pytest`) | Expired tokens rejected with HTTP 401 | **Blocked** (Auth stub) |
 
 ---
 
@@ -87,4 +96,4 @@ This document details all test cases defined for Phase 12 validation in accordan
 |---|---|---|---|---|---|
 | TC-FE-01 | Frontend Scaffolding Integrity | `frontend/` files | Manual file review | HTML/CSS/JS files load cleanly with semantic layout | **Passed** |
 | TC-FE-02 | API Health Reachability Check | `frontend/js/api.js` | Integration test | Client polls `/api/health` and toggles status indicator | **Passed** |
-| TC-FE-03 | Protected Dashboard Navigation | `dashboard.html` | Integration test | Unauthorized visits redirect to `login.html` | **Blocked** (Frontend is Phase 1 static layout) |
+| TC-FE-03 | Protected Dashboard Navigation | `dashboard.html` | Integration test | Unauthorized visits redirect to `login.html` | **Blocked** (Static layout) |
