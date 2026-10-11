@@ -15,7 +15,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 | `Checkpoint: Phase 12 — Blockers Resolved` | 2026-10-11 12:15:00 | eca6555 | Phase 12 9-Step Blocker Resolution | 46 automated tests passed (40 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); All 9 blockers BLK-01 to BLK-09 resolved | Coding Agent |
 | `Checkpoint: Phase 12 — API Contract & Routes Verified` | 2026-10-11 12:40:00 | 142f1a8 | Phase 12 API Contract & Route Consistency Audit | 54 automated tests passed (48 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); All 4 layers aligned; Server-side RBAC verified | Coding Agent |
 | `Checkpoint: Phase 12 — Data Integrity & Isolation Verified` | 2026-10-11 12:55:00 | 49a8a90 | Phase 12 Data Integrity & Test Isolation Audit | 67 automated tests passed (61 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); Database isolation & safeguards verified | Coding Agent |
-| `Checkpoint: Phase 12 — Security Regression & Authorization Verified` | 2026-10-11 13:10:00 | d8a561c | Phase 12 Security Regression & Authorization Testing | 98 passed, 2 xfailed, 0 failed (92 Backend + 6 Blockchain); BUG-09, BUG-10, BUG-11 resolved | Coding Agent |
+| `Checkpoint: Phase 12 — Security Regression & Authorization Verified` | 2026-10-11 13:10:00 | 152fbaf | Phase 12 Security Regression & Authorization Testing | 98 passed, 2 xfailed, 0 failed (92 Backend + 6 Blockchain); BUG-09, BUG-10, BUG-11 resolved | Coding Agent |
 
 ---
 
@@ -162,7 +162,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 
 ### Checkpoint: Phase 12 — Security Regression & Authorization Verified
 - **Timestamp:** 2026-10-11 13:10:00 IST
-- **Git Commit:** `d8a561c`
+- **Git Commit:** `152fbaf`
 - **Scope / Changes:**
   - Migrated authentication user records to bcrypt password hashes in `backend/app/routes/auth.py` and implemented account active verification (`is_active`).
   - Implemented `POST /api/auth/logout` endpoint with token invalidation and wired frontend `logoutUser()` into `frontend/js/api.js` and `frontend/js/dashboard.js`.
