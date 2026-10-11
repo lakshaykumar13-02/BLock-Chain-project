@@ -293,7 +293,15 @@ def test_regenerating_report_does_not_overwrite_previous_records():
     """
     token = get_auth_token("investigator1")
     case_id = "CV-TEST-REP-907"
-    CASES_STORE[case_id] = {"case_id": case_id, "title": "Test Report Case", "is_deleted": False}
+    CASES_STORE[case_id] = {
+        "case_id": case_id,
+        "case_number": case_id,
+        "title": "Test Report Case",
+        "description": "Test case description",
+        "created_at": "2026-10-11T12:00:00Z",
+        "is_deleted": False
+    }
+
 
     # Generate Report 1
     res1 = client.post(

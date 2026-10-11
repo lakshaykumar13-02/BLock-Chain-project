@@ -106,12 +106,20 @@ async def download_report(
     filename: str,
     current_user: dict = Depends(get_current_user)
 ):
-    """Download generated forensic report PDF. Allowed roles: All authenticated."""
+    """Download generated forensic report PDF with path traversal defense. Allowed roles: All authenticated."""
+    if not filename or ".." in filename or "/" in filename or "\\" in filename:
+        raise HTTPException(status_code=404, detail="Invalid report filename")
+
     reports_dir = get_reports_dir()
-    file_path = reports_dir / filename
+    file_path = (reports_dir / os.path.basename(filename)).resolve()
+
+    if not str(file_path).startswith(str(reports_dir.resolve())):
+        raise HTTPException(status_code=404, detail="Access denied")
+
     if not file_path.exists() or not file_path.is_file():
         raise HTTPException(status_code=404, detail="Report not found")
-    return FileResponse(path=str(file_path), filename=filename, media_type="application/pdf")
+    return FileResponse(path=str(file_path), filename=file_path.name, media_type="application/pdf")
+
 
 @router.get("/history/{case_id}")
 async def get_report_history(

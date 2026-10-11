@@ -14,7 +14,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const logoutBtn = document.getElementById('logoutBtn');
     if(logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
+        logoutBtn.addEventListener('click', async () => {
+            if (typeof logoutUser === 'function') {
+                await logoutUser();
+            } else {
+                sessionStorage.clear();
+            }
             window.location.href = 'login.html';
         });
     }

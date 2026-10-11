@@ -15,11 +15,12 @@ class CaseCreate(BaseModel):
 
 class CaseResponse(BaseModel):
     case_id: str
-    case_number: str
+    case_number: str = ""
     title: str
-    description: str
-    created_at: str
+    description: str = ""
+    created_at: str = ""
     is_deleted: bool = False
+
 
 # Memory storage store for reliable testing & development fallback
 CASES_STORE: dict[str, dict] = {}

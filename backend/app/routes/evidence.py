@@ -66,11 +66,28 @@ async def upload_evidence(
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Upload stream read error: {str(e)}")
 
+    MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
+    if len(content) > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail="File size exceeds maximum allowed limit (50MB)"
+        )
+
+    raw_filename = file.filename or "evidence.bin"
+    forbidden_chars = ['\x00', '\n', '\r', '<', '>', ':', '"', '/', '\\', '|', '?', '*']
+    if any(c in raw_filename for c in forbidden_chars) or ".." in raw_filename:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid filename: contains unexpected or forbidden characters"
+        )
+
+
     file_hash = calculate_hash(content)
     try:
-        stored_name, file_path, file_size = save_file(file.filename or "evidence.bin", content)
+        stored_name, file_path, file_size = save_file(raw_filename, content)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Storage filesystem write error: {str(e)}")
+
 
     assigned_id = evidence_id or f"EV-{len(EVIDENCE_STORE) + 1:03d}"
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()

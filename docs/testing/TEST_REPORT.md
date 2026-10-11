@@ -28,7 +28,7 @@ The following runtime tools and versions were physically detected on the host en
 ## 2. Test Execution Commands & Verified Results
 
 ### Automated Commands Executed:
-1. `cd backend && .\venv\Scripts\pytest -v` (63 tests: unit, security, integration, lifecycle, API contract security, data integrity)
+1. `cd backend && .\venv\Scripts\pytest -q` (94 tests: unit, security, integration, lifecycle, contract security, data integrity, security regression)
 2. `cd blockchain && npx hardhat test` (6 tests: deployment, signers, registration, custody, verification, duplicates)
 3. `cd blockchain && npx hardhat compile` (Compiled 1 Solidity file successfully)
 4. Port probes: `localhost:27017` (MongoDB) and `127.0.0.1:8545` (Hardhat RPC)
@@ -37,11 +37,11 @@ The following runtime tools and versions were physically detected on the host en
 
 | Category | Automated Tests | Probed / Static Checks | Total Verified |
 |---|---|---|---|
-| **Passed** | 67 (61 Backend + 6 Blockchain) | 5 (Compile, Git, Probes, Assets) | **72** |
+| **Passed** | 98 (92 Backend + 6 Blockchain) | 5 (Compile, Git, Probes, Assets) | **103** |
 | **Failed** | 0 | 0 | **0** |
 | **Blocked / XFailed** | 2 (Backend tests requiring live MongoDB daemon) | 0 | **2** |
 | **Skipped** | 0 | 0 | **0** |
-| **Total Test Items** | **69** | **5** | **74** |
+| **Total Test Items** | **100** | **5** | **105** |
 
 ---
 
@@ -116,6 +116,28 @@ The following runtime tools and versions were physically detected on the host en
 - **Non-Destructive Report Versioning:** **Passed** (Report regeneration preserves prior versions and independent hashes).
 - **Cascade Deletion Safety:** **Passed** (Case soft deletion preserves evidence and custody logs intact).
 
+### G. Security Regression & Authorization Testing (31 Passed, 0 Failed)
+- **Authentication Credentials Validation:** **Passed** (Bcrypt hashes validated, bad credentials rejected with 401).
+- **Password Hashes Storage:** **Passed** (Zero plaintext credentials in database/in-memory records).
+- **JWT Malformation & Expiration:** **Passed** (Missing, forged, malformed, and expired JWTs rejected with 401).
+- **Inactive Account Enforcement:** **Passed** (`is_active: false` accounts rejected with 403 Forbidden).
+- **Logout Session Invalidation:** **Passed** (`POST /api/auth/logout` invalidates session token).
+- **Bootstrap Administrator Protection:** **Passed** (`GET /api/auth/bootstrap` returns status without exposing secrets).
+- **Role-Based Access Control Matrix (4 Roles):** **Passed** (ADMIN, INVESTIGATOR, ANALYST, VIEWER permissions strictly enforced across all routes).
+- **Case Soft Deletion Restriction:** **Passed** (Only ADMIN can soft-delete cases; INVESTIGATOR/ANALYST/VIEWER rejected with 403).
+- **Evidence Upload & Blockchain Registration RBAC:** **Passed** (Restricted to authorized roles; VIEWER rejected with 403).
+- **Custody Transfer RBAC:** **Passed** (Restricted to authorized roles; VIEWER rejected with 403).
+- **Audit & Verification Access:** **Passed** (Follows approved access policy).
+- **Object-Level Authorization & Immutability:** **Passed** (Targeting nonexistent/invalid resource IDs returns 404/422; evidence deletion blocked with 405).
+- **Soft-Deleted Case Inaccessibility:** **Passed** (Soft-deleted case inaccessible for evidence uploads).
+- **Path Traversal Defense:** **Passed** (`/api/reports/download/` with `../` traversal sequences rejected with 403/400).
+- **Oversized Upload Enforcement:** **Passed** (Uploads exceeding 50MB rejected with 413 Payload Too Large).
+- **Forbidden Filename Sanitization:** **Passed** (Filenames with invalid characters rejected with 400 Bad Request).
+- **MongoDB Operator Injection Defense:** **Passed** (Dictionary filter payloads rejected with 422 Unprocessable Entity via Pydantic).
+- **HTTP Defensive Security Headers:** **Passed** (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Strict-Transport-Security` emitted on all responses).
+- **CORS Origin Enforcement:** **Passed** (Strict whitelist enforced on origins).
+- **Credential & Secret Leaks Elimination:** **Passed** (Zero JWT secrets, private keys, or password hashes leaked in error responses or entity payloads).
+
 ---
 
 ## 4. Defects Discovered & Resolution Status
@@ -130,6 +152,9 @@ The following runtime tools and versions were physically detected on the host en
 | **BUG-06** | Frontend `auth.js` form submission lacked JWT token persistence | `frontend/js/auth.js` | **Resolved (Verified in Client Suite)** |
 | **BUG-07** | Verification route masked missing physical files as matching | `backend/app/routes/verification.py` | **Resolved (Flags missing file)** |
 | **BUG-08** | PDF report generator lacked versioning, overwriting prior reports | `backend/app/services/report.py` | **Resolved (Timestamped versioning)** |
+| **BUG-09** | Plaintext demo passwords & missing logout endpoint | `backend/app/routes/auth.py` | **Resolved (Bcrypt hashes & logout added)** |
+| **BUG-10** | Path traversal vulnerability in report download route | `backend/app/routes/reports.py` | **Resolved (Canonical path containment check)** |
+| **BUG-11** | Missing upload size limit and filename sanitization in evidence upload | `backend/app/routes/evidence.py` | **Resolved (50MB limit & forbidden character check)** |
 
 ---
 

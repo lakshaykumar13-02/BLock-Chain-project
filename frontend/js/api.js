@@ -55,3 +55,23 @@ async function verifyEvidence(evidenceId) {
     });
     return response;
 }
+
+async function logoutUser() {
+    try {
+        const token = sessionStorage.getItem('access_token');
+        if (token) {
+            await fetch(`${API_BASE_URL}/auth/logout`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+        }
+    } catch (e) {
+        console.error('Logout error:', e);
+    } finally {
+        sessionStorage.removeItem('access_token');
+        sessionStorage.removeItem('user_role');
+        sessionStorage.removeItem('user_id');
+    }
+}
