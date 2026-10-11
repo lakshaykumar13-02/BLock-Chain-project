@@ -34,6 +34,7 @@ Before initiating platform services, verify the following installed tools on the
 | **FastAPI Backend Server** | `http://127.0.0.1:8000` | `GET http://127.0.0.1:8000/api/health` (Returns `{"status": "ok"}`) |
 | **FastAPI Interactive Docs** | `http://127.0.0.1:8000/docs` | Swagger UI OpenAPI specification |
 | **Frontend Web Server** | `http://127.0.0.1:5500` | `http://127.0.0.1:5500/login.html` and `dashboard.html` |
+| **QR Code Verification URI** | `http://localhost:8000/api/verification/verify?evidence_id={id}` | Encoded by `GET /api/reports/qr/{id}` (Note: Resolves locally on host PC; external mobile scanning requires configuring a LAN IP) |
 
 ---
 
@@ -140,7 +141,7 @@ To cleanly terminate demonstration services without corrupting state:
   1. Open PowerShell as Administrator and run: `Get-Service -Name MongoDB`.
   2. If status is `Stopped`, execute: `Start-Service -Name MongoDB`.
   3. Verify port reachability: `Test-NetConnection -ComputerName 127.0.0.1 -Port 27017`.
-  4. *Note on Resilience:* The ChainVault backend incorporates an automatic fallback store (`IN_MEMORY_STORE`), allowing full demonstration continuation even if MongoDB is temporarily unavailable.
+  4. *Note on In-Memory Fallback vs. Durable Storage:* The ChainVault backend incorporates an automatic fallback store (`CASES_STORE`, `EVIDENCE_STORE`, `AUDIT_LOGS_STORE`), allowing demonstration continuation if MongoDB is temporarily unavailable. However, in-memory data resides purely in Python process RAM and is lost upon restarting Uvicorn. Keep the MongoDB service running for durable, persistent storage across server restarts.
 
 ### B. Hardhat Node & Blockchain Issues
 - **Symptom:** `/api/blockchain/status` reports `"status": "offline"`.
@@ -150,6 +151,7 @@ To cleanly terminate demonstration services without corrupting state:
   2. If inactive, launch `npx hardhat node` in `blockchain/`.
   3. Re-deploy `EvidenceRegistry.sol` using `npx hardhat run scripts/deploy.js --network localhost`.
   4. Ensure `CONTRACT_ADDRESS` in `.env` matches the newly deployed address.
+  5. *Note on Local Chain State:* Hardhat is an ephemeral local EVM node. Restarting the node resets the blockchain state to Genesis (Block 0), discarding previous transaction history and requiring contract redeployment. Illustrative transaction hashes and block numbers in documentation reflect the active node session.
 
 ### C. FastAPI Backend Startup Errors
 - **Symptom:** `Error: [Errno 10048] error while attempting to bind on address ('127.0.0.1', 8000): address already in use`.

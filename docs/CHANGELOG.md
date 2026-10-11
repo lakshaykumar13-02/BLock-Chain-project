@@ -23,7 +23,8 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 | `Checkpoint: Phase 12 — Final Closure Verified` | 2026-10-11 17:55:00 | `3dafa08` | Phase 12 Final Acceptance & Closure Verification | 101/101 tests passed (100%), all 13 REQs verified, isolated recovery verified (84/84 files, backend import OK); Phase 12 COMPLETE — VERIFIED | Coding Agent |
 | `Checkpoint: Phase 13.1 — Preflight & Environment Verified` | 2026-10-11 18:38:00 | `3d522cd` | Phase 13.1 Preflight & Environment Verification | All 4 local services live and healthy; API roundtrip verified; docs/demo/PREFLIGHT_REPORT.md created | Coding Agent |
 | `Checkpoint: Phase 13.2 — Complete Workflow Demonstrated` | 2026-10-11 19:35:00 | `b3c85c0` | Phase 13.2 Complete Workflow Demonstration | 14/14 workflow steps passed; docs/demo/PHASE_13_2_DEMO_REPORT.md created | Coding Agent |
-| `Checkpoint: Phase 13.3 — Final Demonstration & Evaluator Preparation Complete` | 2026-10-11 19:45:00 | In Progress | Phase 13.3 Evaluator Preparation | Full presentation and evaluation suite created: DEMO_SCRIPT.md, DEMO_RUNBOOK.md, KNOWN_LIMITATIONS.md, EVALUATOR_QA.md | Coding Agent |
+| `Checkpoint: Phase 13.3 — Final Demonstration & Evaluator Preparation Complete` | 2026-10-11 19:45:00 | `9671066` | Phase 13.3 Evaluator Preparation | Full presentation and evaluation suite created: DEMO_SCRIPT.md, DEMO_RUNBOOK.md, KNOWN_LIMITATIONS.md, EVALUATOR_QA.md | Coding Agent |
+| `Checkpoint: Phase 13.3 — Documentation Audit & Final Validation Complete` | 2026-10-11 20:00:00 | Pending Commit | Phase 13.3 Code-Grounded Accuracy Audit | Audited all 4 demo docs against actual code; corrected audit scope, PDF SHA-256 vs X.509 signature, QR localhost networking, in-memory volatility, ephemeral Hardhat state, and legal disclaimers | Coding Agent |
 
 ---
 
@@ -354,7 +355,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 
 ### Checkpoint: Phase 13.3 — Final Demonstration & Evaluator Preparation Complete
 - **Timestamp:** 2026-10-11 19:45:00 IST
-- **Git Commit:** In Progress
+- **Git Commit:** `9671066`
 - **Scope / Changes:**
   - Created comprehensive evaluator preparation documentation suite in `docs/demo/`:
     1. `DEMO_SCRIPT.md`: 10–15 minute presentation script covering problem statement, architecture, authentication, case creation, evidence ingestion, SHA-256 calculation, on-chain anchoring, custody handover, tripartite verification, QR verification badge, forensic PDF generation, defensive controls, and failure recovery points.
@@ -364,3 +365,23 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
   - Verified cross-document consistency across routes, permissions, contract addresses, and evidence hashes.
 - **Status:** **COMPLETE — EVALUATOR SUITE VERIFIED**
 - **Recorded By:** Coding Agent
+
+---
+
+### Checkpoint: Phase 13.3 — Documentation Audit & Final Validation Complete
+- **Timestamp:** 2026-10-11 20:00:00 IST
+- **Git Commit:** Pending Commit
+- **Scope / Changes:**
+  - Conducted rigorous code-grounded accuracy audit across all 4 evaluator documents against actual implementation:
+    1. **Audit Trail Scope:** Clarified in `DEMO_SCRIPT.md`, `KNOWN_LIMITATIONS.md`, and `EVALUATOR_QA.md` that `GET /api/audit/logs/{id}` queries `AUDIT_LOGS_STORE` (tracking custody transfers and synthesized upload provenance), rather than a unified SIEM audit log across all system actions.
+    2. **PDF Integrity vs. Digital Signature:** Replaced claims of "digitally signed PDF" with "tamper-evident PDF report with SHA-256 digest". Added explicit Q11 in `EVALUATOR_QA.md` and subsection in `KNOWN_LIMITATIONS.md` distinguishing independent SHA-256 file checksum from X.509 PKCS#7 / PAdES CA-signed digital signatures.
+    3. **QR Code Localhost Networking:** Clarified that the QR code encodes `http://localhost:8000/...`, resolving locally on the host PC; external smartphone scanning requires configuring a reachable LAN IP address or reverse proxy.
+    4. **In-Memory Fallback vs. Durable Storage:** Explicitly documented that in-memory fallback is volatile Python process RAM and lost upon server restart; durable persistence requires an active MongoDB Community Server instance.
+    5. **Blockchain Ephemeral State:** Identified Hardhat as an ephemeral local development node where node restarts reset block height to 0, clear transaction history, and require contract redeployment. Marked transaction hashes and blocks as illustrative session outputs.
+    6. **Security & Legal Claims:** Removed unsupported legal guarantees ("legally defensible"), replacing them with "aligned with digital forensics principles". Preserved confirmed 50 MB upload ceiling and loopback-only development boundaries.
+- **Verification Performed:**
+  - `git diff --check`: 0 errors.
+  - Route and payload verification against `audit.py`, `custody.py`, `evidence.py`, `report.py`, and `blockchain.py`.
+- **Status:** **COMPLETE — WITH LIMITATIONS (VERIFIED ACCURATE)**
+- **Recorded By:** Coding Agent
+

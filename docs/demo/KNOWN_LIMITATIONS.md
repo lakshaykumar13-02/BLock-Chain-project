@@ -38,6 +38,26 @@ The following architectural distinctions apply between the current verified impl
 - When the local Hardhat node is offline, the backend transitions gracefully to an internal in-memory chain state store (`CHAIN_EVIDENCE_STORE`).
 - While this ensures high availability during testing, in a production legal environment, failure to reach the blockchain must raise a high-severity operational alert and pause evidence registration until consensus is restored.
 
+### D. Audit Trail Scope vs. Unified Event Bus
+- **Observed Implementation:** `GET /api/audit/logs/{id}` specifically queries `AUDIT_LOGS_STORE`, which records custody transfer operations (`CUSTODY_TRANSFER`) and synthesizes initial ingestion provenance (`EVIDENCE_INGESTION`) if queried before any transfers occur.
+- **Limitation:** General system lifecycle operations (case creation, file uploads, tripartite verification executions, and PDF downloads) are recorded in their respective domain stores (`CASES_STORE`, `EVIDENCE_STORE`, `reports/`) and on-chain, but are not aggregated into a centralized, unified SIEM audit log stream.
+
+### E. Forensic PDF Checksum vs. Asymmetric Digital Signature
+- **Observed Implementation:** Report generation (`generate_pdf_report`) compiles case details, evidence digests, and custody history into a PDF and computes its cryptographic SHA-256 digest (`report_hash`).
+- **Limitation:** This SHA-256 hash provides tamper-evident file verification (detecting post-generation modifications). However, it does **not** constitute an asymmetric cryptographic digital signature (such as an X.509 PKCS#7 or PAdES certificate signature using a forensic officer's private key and certified PKI infrastructure).
+
+### F. QR Code Localhost URL & External Mobile Scanning
+- **Observed Implementation:** `GET /api/reports/qr/{id}` generates a QR code encoding `http://localhost:8000/api/verification/verify?evidence_id={id}`.
+- **Limitation:** In a local development environment, `localhost` resolves to the loopback interface of the scanning device. Scanning this QR badge with an external smartphone or tablet attempts to connect to `127.0.0.1` on the smartphone itself, failing to reach the host computer. For external mobile scanning to function, the server must be configured with a reachable LAN IP address or reverse proxy.
+
+### G. In-Memory Fallback Volatility vs. Durable Storage
+- **Observed Implementation:** The application provides fallback stores (`CASES_STORE`, `EVIDENCE_STORE`, `AUDIT_LOGS_STORE`) when MongoDB is disconnected or in test fixtures.
+- **Limitation:** In-memory fallback resides purely in Python process RAM. It is volatile and completely lost if the FastAPI backend process (Uvicorn) is restarted. Durable persistence across restarts requires the MongoDB Community Server service to be active and connected.
+
+### H. Local Hardhat Ephemeral Chain State
+- **Observed Implementation:** The blockchain ledger runs on a local Hardhat standalone node (`http://127.0.0.1:8545`, Chain ID `31337`).
+- **Limitation:** Local Hardhat chain state is ephemeral. Restarting the `npx hardhat node` process resets the block height to 0 and clears all previously mined transactions and deployed contracts. Deploying a fresh contract produces a new address, and historical transaction hashes from prior node sessions become invalid on the reset chain.
+
 ---
 
 ## 3. Legal & Compliance Disclaimers
