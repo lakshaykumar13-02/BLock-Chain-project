@@ -1,0 +1,46 @@
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Node
+node_modules/
+npm-debug.log
+
+# Blockchain
+artifacts/
+cache/
+typechain/
+typechain-types/
+
+# Mac
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Storage & Reports
+storage/evidence/*
+!storage/evidence/.gitkeep
+generated_reports/*
+!generated_reports/.gitkeep
+backend/storage/evidence/*
+!backend/storage/evidence/.gitkeep
+backend/generated_reports/*
+!backend/generated_reports/.gitkeep
+CHAINVAULT/backend/storage/evidence/*
+!CHAINVAULT/backend/storage/evidence/.gitkeep
+CHAINVAULT/backend/generated_reports/*
+!CHAINVAULT/backend/generated_reports/.gitkeep
+

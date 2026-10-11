@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ChainVault</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="logo">ChainVault</div>
+        <ul class="nav-links">
+            <li class="active"><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="#">Cases</a></li>
+            <li><a href="#">Evidence</a></li>
+            <li><a href="#">Blockchain Audit</a></li>
+            <li><a href="#">Reports</a></li>
+        </ul>
+        <div class="logout-container">
+            <button id="logoutBtn" class="btn-outline">Logout</button>
+        </div>
+    </nav>
+    <main class="dashboard-content">
+        <header class="dashboard-header">
+            <h2>Dashboard Overview</h2>
+            <div class="system-status">
+                <span class="status-indicator"></span> Blockchain Network Active
+            </div>
+        </header>
+        
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Cases</h3>
+                <p class="stat-value">124</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Evidence</h3>
+                <p class="stat-value">845</p>
+            </div>
+            <div class="stat-card">
+                <h3>Verified Evidence</h3>
+                <p class="stat-value">840</p>
+            </div>
+            <div class="stat-card alert">
+                <h3>Integrity Alerts</h3>
+                <p class="stat-value">2</p>
+            </div>
+        </section>
+        
+        <section class="dashboard-panels">
+            <div class="panel">
+                <h3>Recent Evidence</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Ev ID</th>
+                            <th>Case Ref</th>
+                            <th>Timestamp</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>EV-991</td>
+                            <td>CS-2023-45</td>
+                            <td>2023-10-24 14:30</td>
+                            <td><span class="badge success">Registered</span></td>
+                        </tr>
+                        <tr>
+                            <td>EV-990</td>
+                            <td>CS-2023-45</td>
+                            <td>2023-10-24 11:15</td>
+                            <td><span class="badge success">Registered</span></td>
+                        </tr>
+                        <tr>
+                            <td>EV-989</td>
+                            <td>CS-2023-41</td>
+                            <td>2023-10-23 09:45</td>
+                            <td><span class="badge danger">Tampered</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel">
+                <h3>Blockchain Status</h3>
+                <div class="bc-info">
+                    <p><strong>Network:</strong> Hardhat Local</p>
+                    <p><strong>Latest Block:</strong> 4521</p>
+                    <p><strong>Smart Contract:</strong> 0x4f...8a2b</p>
+                    <p><strong>Pending TX:</strong> 0</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
