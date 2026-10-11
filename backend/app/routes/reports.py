@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Optional
 import os
+import datetime
 
 from ..services.report import generate_qr_image, generate_pdf_report, get_reports_dir
 from ..security.auth import get_current_user
@@ -12,6 +13,9 @@ from .evidence import EVIDENCE_STORE
 from .custody import AUDIT_LOGS_STORE
 
 router = APIRouter(prefix="/reports", tags=["Forensic Reports"])
+
+# In-memory store preserving all generated report records without destructive overwrites
+REPORTS_REGISTRY: list[dict] = []
 
 class ReportGenerateRequest(BaseModel):
     case_id: Optional[str] = "CV-2026-001"
@@ -54,20 +58,48 @@ async def generate_forensic_report(
     for logs in AUDIT_LOGS_STORE.values():
         all_logs.extend(logs)
 
-    report_path, _ = generate_pdf_report(
-        case_id=cid,
-        case_data=case_data,
-        evidence_items=evidence_list,
-        audit_logs=all_logs
-    )
+    try:
+        report_path, _, report_hash = generate_pdf_report(
+            case_id=cid,
+            case_data=case_data,
+            evidence_items=evidence_list,
+            audit_logs=all_logs,
+            preserve_existing=True
+        )
+        now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        rep_id = f"REP-{cid}-{len(REPORTS_REGISTRY) + 1:03d}"
+        report_record = {
+            "report_id": rep_id,
+            "case_id": cid,
+            "report_filename": os.path.basename(report_path),
+            "report_path": report_path,
+            "report_hash": report_hash,
+            "generated_at": now,
+            "status": "success"
+        }
+        REPORTS_REGISTRY.append(report_record)
 
-    return {
-        "status": "success",
-        "message": f"Forensic report for case {cid} generated successfully",
-        "case_id": cid,
-        "report_filename": os.path.basename(report_path),
-        "report_path": report_path
-    }
+        return {
+            "status": "success",
+            "message": f"Forensic report for case {cid} generated successfully",
+            "case_id": cid,
+            "report_id": rep_id,
+            "report_filename": os.path.basename(report_path),
+            "report_hash": report_hash,
+            "report_path": report_path
+        }
+    except Exception as e:
+        now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        err_record = {
+            "report_id": f"REP-ERR-{len(REPORTS_REGISTRY) + 1:03d}",
+            "case_id": cid,
+            "status": "failed",
+            "error": str(e),
+            "generated_at": now
+        }
+        REPORTS_REGISTRY.append(err_record)
+        raise HTTPException(status_code=500, detail=f"Report generation failed: {str(e)}")
+
 
 @router.get("/download/{filename}")
 async def download_report(
@@ -80,3 +112,11 @@ async def download_report(
     if not file_path.exists() or not file_path.is_file():
         raise HTTPException(status_code=404, detail="Report not found")
     return FileResponse(path=str(file_path), filename=filename, media_type="application/pdf")
+
+@router.get("/history/{case_id}")
+async def get_report_history(
+    case_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Retrieve history of all generated forensic reports for a case. Preserves versioning."""
+    return [r for r in REPORTS_REGISTRY if r.get("case_id") == case_id]

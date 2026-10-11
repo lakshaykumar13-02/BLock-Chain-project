@@ -66,3 +66,34 @@ async def get_blockchain_evidence(
     if not record:
         raise HTTPException(status_code=404, detail="Evidence not found on blockchain")
     return record
+
+@router.post("/reconcile/{evidence_id}", status_code=status.HTTP_200_OK)
+async def reconcile_evidence(
+    evidence_id: str,
+    current_user: dict = Depends(require_role([UserRole.ADMIN, UserRole.INVESTIGATOR]))
+):
+    """
+    Reconciliation service for pending or uncertain transactions:
+    Inspects on-chain state first before any action. If confirmed on-chain,
+    synchronizes local database metadata without issuing redundant transactions.
+    """
+    chain_record = get_evidence_from_chain(evidence_id)
+    if not chain_record:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Evidence {evidence_id} not found on blockchain; cannot reconcile unconfirmed record"
+        )
+
+    # Reconcile local store state
+    if evidence_id in EVIDENCE_STORE:
+        EVIDENCE_STORE[evidence_id]["blockchain_registered"] = True
+        EVIDENCE_STORE[evidence_id]["blockchain_tx"] = chain_record["tx_hash"]
+        EVIDENCE_STORE[evidence_id]["blockchain_status"] = "confirmed"
+
+    return {
+        "status": "reconciled",
+        "evidence_id": evidence_id,
+        "blockchain_tx": chain_record["tx_hash"],
+        "block_number": chain_record.get("block_number"),
+        "on_chain_hash": chain_record.get("file_hash")
+    }

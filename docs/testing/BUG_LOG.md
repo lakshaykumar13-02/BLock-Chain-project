@@ -14,6 +14,8 @@ This document records all defects, security issues, configuration flaws, and imp
 | BUG-04 | Medium (SEV-3) | Infrastructure / RPC | Standalone Hardhat node on `127.0.0.1:8545` is not active on host OS | **Documented (Mitigated)** | Connection Probe | `Test-NetConnection` |
 | BUG-05 | High (SEV-2) | Backend Security (`app/routes/*`) | Mutation routes lacked server-side RBAC dependencies | **Resolved** | Security Audit | `tests/test_api_contract_security.py` |
 | BUG-06 | Medium (SEV-3) | Frontend Auth (`frontend/js/auth.js`) | Login form omitted JWT token storage in sessionStorage | **Resolved** | Contract Audit | Manual & Frontend Client Suite |
+| BUG-07 | High (SEV-2) | Verification Route (`app/routes/verification.py`) | Verification defaulted missing physical files on disk to DB hash | **Resolved** | Data Integrity Audit | `tests/test_data_integrity.py` |
+| BUG-08 | Low (SEV-4) | Report Generator (`app/services/report.py`) | Report generator lacked versioning, overwriting previous PDF artifacts | **Resolved** | Data Integrity Audit | `tests/test_data_integrity.py` |
 
 ---
 
@@ -87,4 +89,24 @@ This document records all defects, security issues, configuration flaws, and imp
 - **Summary:** Frontend login form did not capture the API response `access_token` and store it in `sessionStorage`, causing subsequent API calls from `dashboard.js` to lack `Authorization: Bearer <token>` headers.
 - **Fix Applied:** Added helper `loginUser()` to `frontend/js/api.js` and updated `handleLogin()` in `frontend/js/auth.js` to asynchronously authenticate against `POST /api/auth/login`, persist `access_token` into `sessionStorage`, and display errors on `#loginError`.
 - **Regression Test:** Code audit and automated integration suite.
+- **Current Status:** **Resolved & Verified**.
+
+---
+
+### Bug ID: BUG-07 — Verification Route Masked Missing Physical Files as Matching
+- **Severity:** High (SEV-2 Integrity)
+- **Component:** `backend/app/routes/verification.py`
+- **Summary:** When an evidence record had a recorded `file_path` but the physical file was deleted or unreadable from disk, the verification route fell back `file_hash = db_hash`, falsely reporting `file_vs_database = True` and `verified = True`.
+- **Fix Applied:** Refactored verification logic to check physical file existence and readability. If missing or unreadable, `file_hash` remains `None`, setting `file_status = "missing"`, `verified = False`, and `tampered = True`. Original database and blockchain hashes are never overwritten.
+- **Regression Test:** `backend/tests/test_data_integrity.py::test_missing_file_verification_scenario` -> **Passed**.
+- **Current Status:** **Resolved & Verified**.
+
+---
+
+### Bug ID: BUG-08 — PDF Report Generator Overwrote Previous Case Reports
+- **Severity:** Low (SEV-4 Audit Preservation)
+- **Component:** `backend/app/services/report.py`, `backend/app/routes/reports.py`
+- **Summary:** Regenerating a report for a case wrote to a static filename `ChainVault_Forensic_Report_{case_id}.pdf`, destroying previous versions on disk.
+- **Fix Applied:** Implemented timestamped versioning (`ChainVault_Forensic_Report_{case_id}_{timestamp}.pdf`), independent SHA-256 calculation per generated PDF, and an in-memory `REPORTS_REGISTRY` retaining complete report generation history.
+- **Regression Test:** `backend/tests/test_data_integrity.py::test_regenerating_report_does_not_overwrite_previous_records` -> **Passed**.
 - **Current Status:** **Resolved & Verified**.

@@ -28,7 +28,7 @@ The following runtime tools and versions were physically detected on the host en
 ## 2. Test Execution Commands & Verified Results
 
 ### Automated Commands Executed:
-1. `cd backend && .\venv\Scripts\pytest -v` (50 tests: unit, security, integration, lifecycle, API contract security)
+1. `cd backend && .\venv\Scripts\pytest -v` (63 tests: unit, security, integration, lifecycle, API contract security, data integrity)
 2. `cd blockchain && npx hardhat test` (6 tests: deployment, signers, registration, custody, verification, duplicates)
 3. `cd blockchain && npx hardhat compile` (Compiled 1 Solidity file successfully)
 4. Port probes: `localhost:27017` (MongoDB) and `127.0.0.1:8545` (Hardhat RPC)
@@ -37,11 +37,11 @@ The following runtime tools and versions were physically detected on the host en
 
 | Category | Automated Tests | Probed / Static Checks | Total Verified |
 |---|---|---|---|
-| **Passed** | 54 (48 Backend + 6 Blockchain) | 5 (Compile, Git, Probes, Assets) | **59** |
+| **Passed** | 67 (61 Backend + 6 Blockchain) | 5 (Compile, Git, Probes, Assets) | **72** |
 | **Failed** | 0 | 0 | **0** |
 | **Blocked / XFailed** | 2 (Backend tests requiring live MongoDB daemon) | 0 | **2** |
 | **Skipped** | 0 | 0 | **0** |
-| **Total Test Items** | **56** | **5** | **61** |
+| **Total Test Items** | **69** | **5** | **74** |
 
 ---
 
@@ -103,6 +103,19 @@ The following runtime tools and versions were physically detected on the host en
 - **Zero Credential Leakage:** **Passed** (Responses from `/api/cases` and `/api/evidence/*` omit secrets, password hashes, and private keys).
 - **Evidence Immutability / No Deletion:** **Passed** (Admin attempt to delete evidence rejected with 405 Method Not Allowed / 404).
 
+### F. Data Integrity & Test Isolation (13 Passed, 0 Failed)
+- **Database Isolation & Safeguards:** **Passed** (`chainvault_test` enforced; safeguard raises `PermissionError` on non-test DB).
+- **Independent SHA-256 Calculation:** **Passed** (Upload hash matches independent Python `hashlib` standard).
+- **Multi-Read Hash Immutability:** **Passed** (Evidence hash invariant across repeated requests).
+- **Disposable File Tamper Detection:** **Passed** (Corrupted file flagged as `verified: False, tampered: True`).
+- **Missing File Handling:** **Passed** (Missing file on disk detected and flagged as `file_status: 'missing'`).
+- **Atomic Upload Cleanup:** **Passed** (Failed disk write leaves zero orphan records or untracked files).
+- **Blockchain Receipt Persistence:** **Passed** (Transaction hash and block number committed to metadata).
+- **Safe Reconciliation Service:** **Passed** (`POST /api/blockchain/reconcile/{id}` recovers out-of-sync state without blind retries).
+- **Custody History Preservation:** **Passed** (Chronological order preserved across sequential handovers).
+- **Non-Destructive Report Versioning:** **Passed** (Report regeneration preserves prior versions and independent hashes).
+- **Cascade Deletion Safety:** **Passed** (Case soft deletion preserves evidence and custody logs intact).
+
 ---
 
 ## 4. Defects Discovered & Resolution Status
@@ -115,6 +128,8 @@ The following runtime tools and versions were physically detected on the host en
 | **BUG-04** | Standalone Hardhat node offline on port 8545 | Host Environment | **Documented (Hardhat In-Process Active)** |
 | **BUG-05** | Missing server-side role enforcement on state mutation routes | `backend/app/routes/*` | **Resolved (Verified in Security Suite)** |
 | **BUG-06** | Frontend `auth.js` form submission lacked JWT token persistence | `frontend/js/auth.js` | **Resolved (Verified in Client Suite)** |
+| **BUG-07** | Verification route masked missing physical files as matching | `backend/app/routes/verification.py` | **Resolved (Flags missing file)** |
+| **BUG-08** | PDF report generator lacked versioning, overwriting prior reports | `backend/app/services/report.py` | **Resolved (Timestamped versioning)** |
 
 ---
 

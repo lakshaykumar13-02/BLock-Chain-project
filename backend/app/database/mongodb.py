@@ -34,6 +34,27 @@ class MongoDBClient:
             logger.error(f"Could not connect to MongoDB: {e}")
             raise e
 
+    def safeguard_test_database(self, operation: str = "destructive"):
+        """
+        Automated safety guard: Rejects destructive test operations
+        (e.g., drop, bulk reset, purge) unless the active database is strictly 'chainvault_test'.
+        """
+        if self.db_name != "chainvault_test":
+            raise PermissionError(
+                f"Destructive operation '{operation}' rejected: active database is '{self.db_name}', "
+                f"not the designated test database 'chainvault_test'."
+            )
+
+    async def drop_test_database(self):
+        """
+        Safely drop test database after verifying safety guard.
+        Raises PermissionError if active database is development or production.
+        """
+        self.safeguard_test_database("drop_test_database")
+        if self.client and self.db:
+            await self.client.drop_database(self.db_name)
+            logger.info(f"Test database '{self.db_name}' dropped successfully.")
+
     async def close(self):
         if self.client:
             self.client.close()

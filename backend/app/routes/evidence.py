@@ -1,3 +1,4 @@
+import os
 import datetime
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException, status, Depends
 from fastapi.responses import FileResponse
@@ -60,9 +61,16 @@ async def upload_evidence(
         EVIDENCE_STORE[assigned_id] = record
         return record
 
-    content = await file.read()
+    try:
+        content = await file.read()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Upload stream read error: {str(e)}")
+
     file_hash = calculate_hash(content)
-    stored_name, file_path, file_size = save_file(file.filename or "evidence.bin", content)
+    try:
+        stored_name, file_path, file_size = save_file(file.filename or "evidence.bin", content)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Storage filesystem write error: {str(e)}")
 
     assigned_id = evidence_id or f"EV-{len(EVIDENCE_STORE) + 1:03d}"
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -80,7 +88,17 @@ async def upload_evidence(
         "blockchain_registered": False,
         "blockchain_tx": None
     }
-    EVIDENCE_STORE[assigned_id] = record
+
+    try:
+        EVIDENCE_STORE[assigned_id] = record
+    except Exception as e:
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+            except OSError:
+                pass
+        raise HTTPException(status_code=500, detail=f"Metadata persistence failed: {str(e)}")
+
 
     return {
         "status": "success",

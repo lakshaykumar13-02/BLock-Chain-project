@@ -14,6 +14,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 | `Checkpoint: Phase 12 — Regression Verified` | 2026-10-11 11:52:00 | `5363f85` | Phase 12 Regression Testing & Bug Verification | 47 automated tests (24 passed, 23 blocked, 0 regressions, 0 failed); Phase status INCOMPLETE / BLOCKED | Coding Agent |
 | `Checkpoint: Phase 12 — Blockers Resolved` | 2026-10-11 12:15:00 | eca6555 | Phase 12 9-Step Blocker Resolution | 46 automated tests passed (40 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); All 9 blockers BLK-01 to BLK-09 resolved | Coding Agent |
 | `Checkpoint: Phase 12 — API Contract & Routes Verified` | 2026-10-11 12:40:00 | 142f1a8 | Phase 12 API Contract & Route Consistency Audit | 54 automated tests passed (48 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); All 4 layers aligned; Server-side RBAC verified | Coding Agent |
+| `Checkpoint: Phase 12 — Data Integrity & Isolation Verified` | 2026-10-11 12:55:00 | 27208a9 | Phase 12 Data Integrity & Test Isolation Audit | 67 automated tests passed (61 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); Database isolation & safeguards verified | Coding Agent |
 
 ---
 
@@ -131,4 +132,27 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
   - Lifecycle integration: 11/11 passed (100%).
   - API Contract security suite: 8/8 passed (100%).
 - **Status:** **API CONTRACT & ROUTES VERIFIED — SERVER-SIDE RBAC ENFORCED**
+- **Recorded By:** Coding Agent
+
+---
+
+### Checkpoint: Phase 12 — Data Integrity & Isolation Verified
+- **Timestamp:** 2026-10-11 12:55:00 IST
+- **Git Commit:** `27208a9`
+- **Scope / Changes:**
+  - Enforced test database isolation strictly to `chainvault_test` via `conftest.py` autouse fixture.
+  - Implemented automated destructive operation safeguard `MongoDBClient.safeguard_test_database()` rejecting drop actions on development and production databases.
+  - Hardened `verify_evidence_integrity` against missing physical files and prevented silent overwriting of stored digests.
+  - Implemented atomic upload cleanup in `evidence.py` preventing orphaned disk artifacts on write errors.
+  - Added timestamped report versioning, independent report SHA-256 calculation, and report history retrieval endpoint `GET /api/reports/history/{case_id}`.
+  - Added on-chain transaction reconciliation endpoint `POST /api/blockchain/reconcile/{evidence_id}` recovering pending states without blind retries.
+  - Verified case soft-deletion does not cascade-delete evidence or custody records.
+  - Created dedicated test suite `backend/tests/test_data_integrity.py` with 13 focused tests (100% passed).
+  - Created `docs/testing/DATA_INTEGRITY_AUDIT.md`.
+  - Updated `docs/testing/TEST_REPORT.md`, `docs/testing/BUG_LOG.md`, `docs/testing/COVERAGE_MATRIX.md`.
+- **Verification Performed:**
+  - Backend test suite: 61 passed, 2 xfailed (known BUG-03 offline daemon), 0 failed (63 tests).
+  - Blockchain test suite: 6 passed, 0 failed.
+  - Total automated test suite: 67 passed, 2 xfailed, 0 failed (69 tests).
+- **Status:** **DATA INTEGRITY & TEST ISOLATION VERIFIED**
 - **Recorded By:** Coding Agent

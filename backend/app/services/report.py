@@ -1,5 +1,7 @@
 import io
 import os
+import hashlib
+import time
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -36,10 +38,17 @@ def generate_qr_image(evidence_id: str, base_url: str = "http://localhost:8000")
     img.save(buf, format="PNG")
     return buf.getvalue()
 
-def generate_pdf_report(case_id: str, case_data: dict, evidence_items: list[dict], audit_logs: list[dict]) -> tuple[str, bytes]:
+def generate_pdf_report(
+    case_id: str,
+    case_data: dict,
+    evidence_items: list[dict],
+    audit_logs: list[dict],
+    preserve_existing: bool = True
+) -> tuple[str, bytes, str]:
     """
     Generate a signed forensic audit report in PDF format using ReportLab.
-    Returns (report_filename, pdf_bytes).
+    Returns (report_filepath, pdf_bytes, report_sha256_hash).
+    Uses timestamp versioning to ensure regenerating a report does not overwrite earlier report records.
     """
     from reportlab.lib.pagesizes import letter
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
@@ -47,7 +56,11 @@ def generate_pdf_report(case_id: str, case_data: dict, evidence_items: list[dict
     from reportlab.lib import colors
 
     reports_dir = get_reports_dir()
-    report_filename = f"ChainVault_Forensic_Report_{case_id}.pdf"
+    if preserve_existing:
+        ts = int(time.time() * 1000)
+        report_filename = f"ChainVault_Forensic_Report_{case_id}_{ts}.pdf"
+    else:
+        report_filename = f"ChainVault_Forensic_Report_{case_id}.pdf"
     report_path = reports_dir / report_filename
 
     buffer = io.BytesIO()
@@ -130,8 +143,9 @@ def generate_pdf_report(case_id: str, case_data: dict, evidence_items: list[dict
 
     doc.build(story)
     pdf_bytes = buffer.getvalue()
+    report_hash = hashlib.sha256(pdf_bytes).hexdigest()
 
     with open(report_path, "wb") as f:
         f.write(pdf_bytes)
 
-    return str(report_path), pdf_bytes
+    return str(report_path), pdf_bytes, report_hash
