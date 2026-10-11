@@ -13,7 +13,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 | `Checkpoint: Phase 12 — Integration Audited` | 2026-10-11 11:46:00 | `7dbdeb1` | Phase 12 Integration & E2E Validation | 24 tests passed, 21 blocked/xfailed; 11-step E2E lifecycle audited; Phase status INCOMPLETE / BLOCKED | Coding Agent |
 | `Checkpoint: Phase 12 — Regression Verified` | 2026-10-11 11:52:00 | `5363f85` | Phase 12 Regression Testing & Bug Verification | 47 automated tests (24 passed, 23 blocked, 0 regressions, 0 failed); Phase status INCOMPLETE / BLOCKED | Coding Agent |
 | `Checkpoint: Phase 12 — Blockers Resolved` | 2026-10-11 12:15:00 | eca6555 | Phase 12 9-Step Blocker Resolution | 46 automated tests passed (40 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); All 9 blockers BLK-01 to BLK-09 resolved | Coding Agent |
-| `Checkpoint: Phase 12 — API Contract & Routes Verified` | 2026-10-11 12:40:00 | 2484caf | Phase 12 API Contract & Route Consistency Audit | 54 automated tests passed (48 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); All 4 layers aligned; Server-side RBAC verified | Coding Agent |
+| `Checkpoint: Phase 12 — API Contract & Routes Verified` | 2026-10-11 12:40:00 | 142f1a8 | Phase 12 API Contract & Route Consistency Audit | 54 automated tests passed (48 Backend + 6 Blockchain, 0 failed, 2 xfailed due to BUG-03); All 4 layers aligned; Server-side RBAC verified | Coding Agent |
 
 ---
 
@@ -116,7 +116,7 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 
 ### Checkpoint: Phase 12 — API Contract & Routes Verified
 - **Timestamp:** 2026-10-11 12:40:00 IST
-- **Git Commit:** `2484caf`
+- **Git Commit:** `142f1a8`
 - **Scope / Changes:**
   - Audited all 4 architectural layers: FastAPI backend routes & Pydantic schemas, Frontend requests (`api.js`, `auth.js`, `dashboard.js`), Blockchain service & Solidity smart contracts (`EvidenceRegistry.sol`), and automated tests and documentation.
   - Implemented server-side RBAC dependencies (`require_role([ADMIN, INVESTIGATOR])`) on mutation routes across `cases.py`, `evidence.py`, `blockchain.py`, `custody.py`, and `reports.py`.
