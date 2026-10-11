@@ -10,7 +10,8 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 |---|---|---|---|---|---|
 | `Checkpoint: Phase 1 — Complete` | 2026-10-11 11:13:49 | `a7fd89c403c235e6cb1d4e8e286b7e7b16103d7c` | Phase 1 Completion (Baseline Architecture) | All baseline criteria passed; Contract compile OK; Backend import OK | Coding Agent |
 | `Checkpoint: Phase 12 — Testing Audited` | 2026-10-11 11:35:00 | `9ccca4d` | Phase 12 Unit & Security Test Audit | 7 tests passed, 6 blocked/xfailed, BUG-01 resolved; Phase status INCOMPLETE / BLOCKED | Coding Agent |
-| `Checkpoint: Phase 12 — Integration Audited` | 2026-10-11 11:46:00 | *(Working Tree Commit)* | Phase 12 Integration & E2E Validation | 24 tests passed, 21 blocked/xfailed; 11-step E2E lifecycle audited; Phase status INCOMPLETE / BLOCKED | Coding Agent |
+| `Checkpoint: Phase 12 — Integration Audited` | 2026-10-11 11:46:00 | `7dbdeb1` | Phase 12 Integration & E2E Validation | 24 tests passed, 21 blocked/xfailed; 11-step E2E lifecycle audited; Phase status INCOMPLETE / BLOCKED | Coding Agent |
+| `Checkpoint: Phase 12 — Regression Verified` | 2026-10-11 11:52:00 | *(Working Tree Commit)* | Phase 12 Regression Testing & Bug Verification | 47 automated tests (24 passed, 23 blocked, 0 regressions, 0 failed); Phase status INCOMPLETE / BLOCKED | Coding Agent |
 
 ---
 
@@ -54,16 +55,32 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 
 ### Checkpoint: Phase 12 — Integration Audited
 - **Timestamp:** 2026-10-11 11:46:00 IST
+- **Git Commit:** `7dbdeb1`
 - **Scope / Changes:**
   - Component integration test suites created under `backend/tests/integration/`:
     - `test_fastapi_mongodb.py`: Database isolation to `chainvault_test` and offline service resilience.
     - `test_fastapi_blockchain.py`: Strict local RPC routing and offline node resilience.
     - `test_frontend_fastapi.py`: Base URL consistency and zero client-side private key/secret leaks.
     - `test_evidence_lifecycle.py`: 11-step end-to-end synthetic evidence lifecycle audit.
-  - Created [docs/testing/INTEGRATION_TEST_REPORT.md](file:///d:/parjaayi project/CHAINVAULT/docs/testing/INTEGRATION_TEST_REPORT.md).
-  - Updated [docs/testing/COVERAGE_MATRIX.md](file:///d:/parjaayi project/CHAINVAULT/docs/testing/COVERAGE_MATRIX.md), [docs/testing/TEST_REPORT.md](file:///d:/parjaayi project/CHAINVAULT/docs/testing/TEST_REPORT.md), [docs/testing/BUG_LOG.md](file:///d:/parjaayi project/CHAINVAULT/docs/testing/BUG_LOG.md).
+  - Created `docs/testing/INTEGRATION_TEST_REPORT.md`.
+  - Updated `docs/testing/COVERAGE_MATRIX.md`, `docs/testing/TEST_REPORT.md`, `docs/testing/BUG_LOG.md`.
 - **Verification Performed:**
   - Automated tests executed: 45 tests (24 passed, 21 blocked/xfailed, 0 failed).
   - Pre-test safety gate: Target DB `chainvault_test` verified, local RPC verified, zero client secrets verified.
+- **Status:** **INCOMPLETE / BLOCKED**
+- **Recorded By:** Coding Agent
+
+---
+
+### Checkpoint: Phase 12 — Regression Verified
+- **Timestamp:** 2026-10-11 11:52:00 IST
+- **Scope / Changes:**
+  - Full regression suite executed across 47 automated test items (42 Backend + 5 Blockchain).
+  - Added `backend/tests/test_rbac_regression.py` auditing the four user roles (ADMIN, INVESTIGATOR, ANALYST, VIEWER).
+  - Independently re-tested BUG-01 (CORS port 5500) -> Verified Fixed.
+  - Created `docs/testing/REGRESSION_TEST_REPORT.md`.
+- **Verification Performed:**
+  - Baseline vs final test comparison: 0 regressions found; all 24 passing tests remained stable.
+  - Blocked tests documented: 23 blocked/xfailed due to missing Phases 2–11 implementation.
 - **Status:** **INCOMPLETE / BLOCKED**
 - **Recorded By:** Coding Agent
