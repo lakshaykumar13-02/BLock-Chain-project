@@ -20,7 +20,9 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
 | `Checkpoint: Phase 12 — Real-Service Integration Verified` | 2026-10-11 14:00:00 | 2dca6a6 | Phase 12 Real-Service Integration Verification | Standalone Hardhat node live verified on port 8545; MongoDB host absence documented | Coding Agent |
 | `Checkpoint: Phase 12 — MongoDB Integration Diagnostic & Blocker Audit` | 2026-10-11 14:25:00 | `8c0ce63` | Phase 12 MongoDB Blocker Resolution Audit | Exhaustive diagnostic confirms MongoDB not installed on host OS; Tests safe; Status BLOCKED / INCOMPLETE | Coding Agent |
 | `Checkpoint: Phase 12 — Real MongoDB Integration Resolved & Complete` | 2026-10-11 16:45:00 | `e54d43e` | Phase 12 Real MongoDB Integration Complete | MongoDB Community Server running as Windows service; Live ping, CRUD, indexes, and cleanup verified (101/101 tests passed) | Coding Agent |
-| `Checkpoint: Phase 12 — Final Closure Verified` | 2026-10-11 17:55:00 | `3dafa08` | Phase 12 Final Acceptance & Closure Verification | 101/101 tests passed (100%), all 13 REQs verified, isolated recovery verified (84/84 files, backend import OK); Phase 12 COMPLETE — VERIFIED; Phase 13 PAUSED | Coding Agent |
+| `Checkpoint: Phase 12 — Final Closure Verified` | 2026-10-11 17:55:00 | `3dafa08` | Phase 12 Final Acceptance & Closure Verification | 101/101 tests passed (100%), all 13 REQs verified, isolated recovery verified (84/84 files, backend import OK); Phase 12 COMPLETE — VERIFIED | Coding Agent |
+| `Checkpoint: Phase 13.1 — Preflight & Environment Verified` | 2026-10-11 18:38:00 | `3d522cd` | Phase 13.1 Preflight & Environment Verification | All 4 local services live and healthy; API roundtrip verified; docs/demo/PREFLIGHT_REPORT.md created | Coding Agent |
+| `Checkpoint: Phase 13.2 — Complete Workflow Demonstrated` | 2026-10-11 19:35:00 | `In Progress` | Phase 13.2 Complete Workflow Demonstration | 14/14 workflow steps passed (UI login, case creation, upload, SHA-256 match, blockchain register, custody transfer, 3-way hash check, QR badge, PDF report, audit logs, 4 unauthorized rejections) | Coding Agent |
 
 ---
 
@@ -303,5 +305,46 @@ This document records all verified checkpoints, Git commit hashes, and backup lo
   - Isolated recovery test: Passed (Verified as Proven Recovery Point).
   - Git working tree: Clean; `git diff --check` passed with 0 errors.
 - **Status:** **COMPLETE — VERIFIED**
-- **Phase 13 Status:** **PAUSED**
+- **Recorded By:** Coding Agent
+
+---
+
+### Checkpoint: Phase 13.1 — Preflight & Environment Verified
+- **Timestamp:** 2026-10-11 18:38:00 IST
+- **Git Commit:** `3d522cd`
+- **Scope / Changes:**
+  - Verified local development environment toolchain (Python 3.13.14, Node v22.20.0, npm 10.9.3, Hardhat 2.29.1, Git 2.55.0.windows.3, Pytest 9.1.1).
+  - Validated all 4 required local services running and healthy:
+    1. MongoDB Community Server on port 27017 (`TcpTestSucceeded: True`, Motor ping OK).
+    2. Standalone Hardhat node on port 8545 (Chain ID 31337, `EvidenceRegistry.sol` deployed at `0x5FbDB2315678afecb367f032d93F642f64180aa3`).
+    3. FastAPI backend on port 8000 (`/api/health` and `/api/blockchain/status` returning HTTP 200).
+    4. Frontend web server on port 5500 (`login.html` and `dashboard.html` returning HTTP 200).
+  - Executed live API roundtrip smoke test (login, JWT acquisition, case list query).
+  - Created `docs/demo/PREFLIGHT_REPORT.md`.
+- **Status:** **COMPLETE — READY FOR DEMONSTRATION**
+- **Recorded By:** Coding Agent
+
+---
+
+### Checkpoint: Phase 13.2 — Complete Workflow Demonstrated
+- **Timestamp:** 2026-10-11 19:35:00 IST
+- **Git Commit:** In Progress
+- **Scope / Changes:**
+  - Executed complete 14-step forensic workflow demonstration in the active local environment:
+    1. Web login via browser subagent at `http://127.0.0.1:5500/login.html` (recorded video and screenshots).
+    2. Synthetic case `CV-DEMO-2026-001` created via `POST /api/cases`.
+    3. Synthetic evidence `EV-DEMO-FORENSIC-001` uploaded (`demo_forensic_payload.dat`).
+    4. Independent SHA-256 calculation matched stored database hash (`f693f6...`).
+    5. Evidence registered on local Hardhat blockchain (Tx: `0xdb91...`, Block #101).
+    6. On-chain transaction receipt, block height, and contract state verified via `/api/blockchain/evidence/{id}`.
+    7. Custody transferred to forensic analyst (`0x709979...`) via `POST /api/custody/transfer` (Tx: `0xcfde...`, Block #102).
+    8. Custody state and current on-chain custodian verified.
+    9. Three-way integrity comparison verified: File == DB == Blockchain (`verified: True`, `tampered: False`).
+    10. Tamper-evident QR badge generated and streamed (`1682` bytes PNG).
+    11. Forensic signed PDF report compiled via ReportLab (`ChainVault_Forensic_Report_CV-DEMO-2026-001_1791727496947.pdf`).
+    12. PDF downloaded and verified (`%PDF` header, report hash `34baa5...` matched exactly).
+    13. Chronological audit trail inspection confirmed append-only custody transfer logs.
+    14. Safe unauthorized actions correctly rejected (405 Method Not Allowed on evidence deletion, 403 on case deletion as investigator, 403 on viewer upload, 404/400 on report download traversal).
+  - Created comprehensive report `docs/demo/PHASE_13_2_DEMO_REPORT.md`.
+- **Status:** **COMPLETE — 14/14 STEPS PASSED**
 - **Recorded By:** Coding Agent
