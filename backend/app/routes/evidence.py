@@ -69,7 +69,7 @@ async def upload_evidence(
     MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
     if len(content) > MAX_FILE_SIZE:
         raise HTTPException(
-            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            status_code=status.HTTP_413_CONTENT_TOO_LARGE,
             detail="File size exceeds maximum allowed limit (50MB)"
         )
 

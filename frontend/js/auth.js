@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     sessionStorage.setItem('access_token', data.access_token);
                     sessionStorage.setItem('user_id', data.user_id);
                     sessionStorage.setItem('role', data.role);
-                    window.location.href = 'dashboard.html';
+                    window.location.href = 'dashboard.html?v=' + Date.now();
                 } else {
                     const err = await response.json().catch(() => ({}));
                     if (loginError) {

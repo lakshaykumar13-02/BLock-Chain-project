@@ -43,4 +43,5 @@ CHAINVAULT/backend/storage/evidence/*
 !CHAINVAULT/backend/storage/evidence/.gitkeep
 CHAINVAULT/backend/generated_reports/*
 !CHAINVAULT/backend/generated_reports/.gitkeep
-
+backend/storage/*.bin
+backend/storage/*.tmp

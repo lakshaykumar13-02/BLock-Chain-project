@@ -3,97 +3,379 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Dashboard - ChainVault</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/style.css?v=2">
+    <link rel="stylesheet" href="css/dashboard.css?v=2">
 </head>
 <body>
+    <!-- Sidebar Navigation -->
     <nav class="sidebar">
         <div class="logo">ChainVault</div>
         <ul class="nav-links">
-            <li class="active"><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="#">Cases</a></li>
-            <li><a href="#">Evidence</a></li>
-            <li><a href="#">Blockchain Audit</a></li>
-            <li><a href="#">Reports</a></li>
+            <li class="active"><a href="#dashboard" data-view="dashboard">Dashboard</a></li>
+            <li><a href="#cases" data-view="cases">Cases</a></li>
+            <li><a href="#evidence" data-view="evidence">Evidence</a></li>
+            <li><a href="#blockchain" data-view="blockchain">Blockchain Audit</a></li>
+            <li><a href="#reports" data-view="reports">Reports</a></li>
         </ul>
         <div class="logout-container">
             <button id="logoutBtn" class="btn-outline">Logout</button>
         </div>
     </nav>
+
+    <!-- Main Content Area -->
     <main class="dashboard-content">
+        <!-- Toast Notification Banner -->
+        <div id="toastBanner" class="toast-banner"></div>
+
+        <!-- Global Header -->
         <header class="dashboard-header">
-            <h2>Dashboard Overview</h2>
-            <div class="system-status">
-                <span class="status-indicator"></span> Blockchain Network Active
+            <h2 id="pageTitle">Dashboard Overview</h2>
+            <div style="display:flex; align-items:center; gap: 1rem;">
+                <div id="userBadge" class="user-badge">
+                    <span id="userBadgeRole">INVESTIGATOR</span>
+                    <strong id="userBadgeName">investigator1</strong>
+                </div>
+                <div class="system-status">
+                    <span class="status-indicator"></span>
+                    <span id="systemStatusText">Connecting...</span>
+                </div>
             </div>
         </header>
-        
-        <section class="stats-grid">
-            <div class="stat-card">
-                <h3>Total Cases</h3>
-                <p class="stat-value">124</p>
+
+        <!-- ============================================================ -->
+        <!-- VIEW 1: DASHBOARD OVERVIEW                                   -->
+        <!-- ============================================================ -->
+        <section id="view-dashboard" class="dashboard-view active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Cases</h3>
+                    <p id="statCases" class="stat-value">--</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Evidence</h3>
+                    <p id="statEvidence" class="stat-value">--</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Verified Evidence</h3>
+                    <p id="statVerified" class="stat-value">--</p>
+                </div>
+                <div class="stat-card alert">
+                    <h3>Tamper Alerts</h3>
+                    <p id="statAlerts" class="stat-value">0</p>
+                </div>
             </div>
-            <div class="stat-card">
-                <h3>Total Evidence</h3>
-                <p class="stat-value">845</p>
-            </div>
-            <div class="stat-card">
-                <h3>Verified Evidence</h3>
-                <p class="stat-value">840</p>
-            </div>
-            <div class="stat-card alert">
-                <h3>Integrity Alerts</h3>
-                <p class="stat-value">2</p>
+
+            <div class="dashboard-panels">
+                <div class="panel">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+                        <h3 style="margin-bottom:0; border:none;">Recent Evidence Activity</h3>
+                        <button id="btnRefreshDashboard" class="btn-sm btn-primary">Refresh</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Evidence ID</th>
+                                    <th>Case Ref</th>
+                                    <th>SHA-256 Digest</th>
+                                    <th>Custodian</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboardEvidenceTbody">
+                                <tr><td colspan="5" class="empty-state">Loading evidence records...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>Blockchain Ledger</h3>
+                    <div class="bc-info">
+                        <p><strong>Network:</strong> <span id="bcNetwork">Checking...</span></p>
+                        <p><strong>Chain ID:</strong> <span id="bcChainId">--</span></p>
+                        <p><strong>RPC Endpoint:</strong> <span id="bcRpcUrl" class="mono">--</span></p>
+                        <p><strong>Contract:</strong> <span id="bcContract" class="mono">--</span></p>
+                        <p><strong>Status:</strong> <span id="bcStatus" class="badge success">Active</span></p>
+                    </div>
+                </div>
             </div>
         </section>
-        
-        <section class="dashboard-panels">
-            <div class="panel">
-                <h3>Recent Evidence</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Ev ID</th>
-                            <th>Case Ref</th>
-                            <th>Timestamp</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>EV-991</td>
-                            <td>CS-2023-45</td>
-                            <td>2023-10-24 14:30</td>
-                            <td><span class="badge success">Registered</span></td>
-                        </tr>
-                        <tr>
-                            <td>EV-990</td>
-                            <td>CS-2023-45</td>
-                            <td>2023-10-24 11:15</td>
-                            <td><span class="badge success">Registered</span></td>
-                        </tr>
-                        <tr>
-                            <td>EV-989</td>
-                            <td>CS-2023-41</td>
-                            <td>2023-10-23 09:45</td>
-                            <td><span class="badge danger">Tampered</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+
+        <!-- ============================================================ -->
+        <!-- VIEW 2: CASES MANAGEMENT                                     -->
+        <!-- ============================================================ -->
+        <section id="view-cases" class="dashboard-view">
+            <div class="section-header">
+                <h2>Forensic Cases</h2>
+                <button id="btnToggleCreateCase" class="btn btn-primary">+ Create Case</button>
             </div>
+
+            <!-- Create Case Panel (Collapsible) -->
+            <div id="createCaseCard" class="form-card" style="display:none;">
+                <h3 style="margin-bottom: 1rem;">Register New Forensic Case</h3>
+                <form id="createCaseForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="newCaseId">Case ID</label>
+                            <input type="text" id="newCaseId" placeholder="e.g. CV-2026-002" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newCaseTitle">Case Title</label>
+                            <input type="text" id="newCaseTitle" placeholder="e.g. Operation Digital Vault" required>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label for="newCaseDesc">Investigation Summary</label>
+                        <textarea id="newCaseDesc" placeholder="Enter investigation scope and seized evidence description"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="btnCancelCreateCase" class="btn-sm btn-outline">Cancel</button>
+                        <button type="submit" class="btn-sm btn-success">Save Case</button>
+                    </div>
+                </form>
+            </div>
+
             <div class="panel">
-                <h3>Blockchain Status</h3>
-                <div class="bc-info">
-                    <p><strong>Network:</strong> Hardhat Local</p>
-                    <p><strong>Latest Block:</strong> 4521</p>
-                    <p><strong>Smart Contract:</strong> 0x4f...8a2b</p>
-                    <p><strong>Pending TX:</strong> 0</p>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Case ID</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Created Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="casesTableBody">
+                            <tr><td colspan="5" class="empty-state">Loading cases...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- VIEW 3: EVIDENCE INGESTION & INTEGRITY                       -->
+        <!-- ============================================================ -->
+        <section id="view-evidence" class="dashboard-view">
+            <div class="section-header">
+                <h2>Digital Evidence Ingestion & Verification</h2>
+                <button id="btnToggleUploadEvidence" class="btn btn-primary">+ Ingest Evidence</button>
+            </div>
+
+            <!-- Upload Evidence Panel (Collapsible) -->
+            <div id="uploadEvidenceCard" class="form-card" style="display:none;">
+                <h3 style="margin-bottom: 1rem;">Ingest Forensic Binary Evidence (Max 50 MB)</h3>
+                <form id="uploadEvidenceForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="uploadFile">Evidence File</label>
+                            <input type="file" id="uploadFile" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="uploadCaseId">Associated Case ID</label>
+                            <input type="text" id="uploadCaseId" placeholder="e.g. CV-DEMO-2026-001" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="uploadEvidenceId">Evidence ID (Optional)</label>
+                            <input type="text" id="uploadEvidenceId" placeholder="e.g. EV-DEMO-002 (Auto-assigned if blank)">
+                        </div>
+                        <div class="form-group">
+                            <label for="uploadCustodian">Initial Custodian</label>
+                            <input type="text" id="uploadCustodian" placeholder="investigator1">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="btnCancelUpload" class="btn-sm btn-outline">Cancel</button>
+                        <button type="submit" class="btn-sm btn-success">Ingest & Calculate SHA-256</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="panel">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Evidence ID</th>
+                                <th>Case Ref</th>
+                                <th>Filename</th>
+                                <th>Size</th>
+                                <th>SHA-256 Hash</th>
+                                <th>Active Custodian</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="evidenceTableBody">
+                            <tr><td colspan="7" class="empty-state">Loading evidence records...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- VIEW 4: BLOCKCHAIN AUDIT & CUSTODY                          -->
+        <!-- ============================================================ -->
+        <section id="view-blockchain" class="dashboard-view">
+            <div class="section-header">
+                <h2>Blockchain Audit & Custody Handover</h2>
+            </div>
+
+            <div class="dashboard-panels" style="margin-bottom: 1.5rem;">
+                <!-- Custody Handover Form -->
+                <div class="panel">
+                    <h3>Execute Custody Handover</h3>
+                    <form id="custodyTransferForm">
+                        <div class="form-group" style="margin-bottom:0.75rem;">
+                            <label for="transferEvidenceId">Evidence ID</label>
+                            <input type="text" id="transferEvidenceId" placeholder="e.g. EV-DEMO-FORENSIC-001" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0.75rem;">
+                            <label for="transferNewCustodian">New Custodian (Address / Username)</label>
+                            <input type="text" id="transferNewCustodian" placeholder="e.g. 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 or analyst1" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom:1rem;">
+                            <label for="transferReason">Handover Justification</label>
+                            <input type="text" id="transferReason" placeholder="e.g. Transfer to Lab Analyst for artifact analysis" required>
+                        </div>
+                        <button type="submit" class="btn-sm btn-success">Record On-Chain Transfer</button>
+                    </form>
+                </div>
+
+                <!-- On-Chain Item Lookup -->
+                <div class="panel">
+                    <h3>On-Chain Ledger Query</h3>
+                    <form id="lookupChainForm" style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+                        <input type="text" id="lookupEvidenceId" placeholder="Evidence ID (e.g. EV-DEMO-FORENSIC-001)" required style="flex:1;">
+                        <button type="submit" class="btn-sm btn-primary">Query Ledger</button>
+                    </form>
+                    <div id="chainLookupResult" style="font-size:0.85rem; line-height:1.5;">
+                        <p style="color:var(--highlight-color); font-style:italic;">Enter Evidence ID above to query smart contract state.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audit Trail Table -->
+            <div class="panel">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <h3 style="margin-bottom:0; border:none;">Custody Audit Trail History</h3>
+                    <div style="display:flex; gap:0.5rem;">
+                        <input type="text" id="auditQueryId" placeholder="Evidence ID..." style="padding:0.3rem 0.6rem; font-size:0.8rem; border-radius:4px; background:var(--primary-color); border:1px solid var(--accent-color); color:var(--text-light);">
+                        <button id="btnFetchAuditLogs" class="btn-sm btn-primary">Load History</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Log ID</th>
+                                <th>Action</th>
+                                <th>Previous Custodian</th>
+                                <th>New Custodian</th>
+                                <th>Timestamp</th>
+                                <th>On-Chain TX</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditTableBody">
+                            <tr><td colspan="6" class="empty-state">Enter an Evidence ID to view chronological audit trail.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- VIEW 5: FORENSIC REPORTS                                     -->
+        <!-- ============================================================ -->
+        <section id="view-reports" class="dashboard-view">
+            <div class="section-header">
+                <h2>Forensic Reports (PDF & SHA-256)</h2>
+            </div>
+
+            <div class="form-card">
+                <h3 style="margin-bottom: 1rem;">Compile Tamper-Evident Forensic Report</h3>
+                <form id="generateReportForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="reportCaseId">Case Reference</label>
+                            <input type="text" id="reportCaseId" placeholder="e.g. CV-DEMO-2026-001" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportTitle">Report Title</label>
+                            <input type="text" id="reportTitle" placeholder="e.g. Formal Forensic Examination Report" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" id="btnCompileReport" class="btn-sm btn-success">Compile Forensic PDF Report</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h3 style="margin-bottom:1rem;">Generated Forensic Reports</h3>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Report ID</th>
+                                <th>Case ID</th>
+                                <th>Filename</th>
+                                <th>SHA-256 Digest</th>
+                                <th>Generated At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportsTableBody">
+                            <tr><td colspan="6" class="empty-state">No reports generated yet in this session.</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
     </main>
-    <script src="js/api.js"></script>
-    <script src="js/dashboard.js"></script>
+
+    <!-- ============================================================ -->
+    <!-- MODALS: VERIFICATION RESULT & QR CODE                        -->
+    <!-- ============================================================ -->
+
+    <!-- Tripartite Verification Modal -->
+    <div id="verifyModal" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="verifyModalTitle">Tripartite Hash Verification</h3>
+                <button class="modal-close" onclick="closeModal('verifyModal')">&times;</button>
+            </div>
+            <div id="verifyModalContent">
+                <p>Verifying cryptographic hashes across Physical Disk, MongoDB metadata, and Ethereum ledger...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Preview Modal -->
+    <div id="qrModal" class="modal-backdrop">
+        <div class="modal-card" style="text-align:center;">
+            <div class="modal-header">
+                <h3 id="qrModalTitle">Tamper-Evident QR Verification Badge</h3>
+                <button class="modal-close" onclick="closeModal('qrModal')">&times;</button>
+            </div>
+            <div style="padding: 1.5rem 0;">
+                <img id="qrModalImg" src="" alt="Forensic QR Badge" style="width:200px; height:200px; border:2px solid var(--accent-color); border-radius:8px; background:white; padding:8px;">
+                <p id="qrModalDesc" class="mono" style="margin-top:1rem; font-size:0.85rem;"></p>
+                <p style="font-size:0.75rem; color:var(--highlight-color); margin-top:0.5rem;">
+                    Encodes direct verification endpoint. In local environment, resolves to host port 8000.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js?v=3"></script>
+    <script src="js/dashboard.js?v=3"></script>
 </body>
 </html>
