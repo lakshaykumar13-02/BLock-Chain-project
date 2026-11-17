@@ -1,0 +1,139 @@
+{
+  "backup_timestamp": "2026-10-24T09:53:51.236667+00:00",
+  "source_database": "chainvault",
+  "source_uri_host": "mongodb://localhost:27017",
+  "collections": {
+    "cases": [],
+    "evidence": [
+      {
+        "_id": "6ad782b00d42938a8628dea6",
+        "evidence_id": "EV-PH4-DEBUG",
+        "blockchain_registered": false,
+        "blockchain_tx": null,
+        "case_id": "CV-DEBUG",
+        "custodian": "investigator1",
+        "file_hash": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+        "file_path": "D:\\parjaayi project\\CHAINVAULT\\backend\\storage\\evidence\\a9e68179_test.bin",
+        "file_size": 5,
+        "filename": "test.bin",
+        "stored_filename": "a9e68179_test.bin",
+        "uploaded_at": "2026-10-20T15:03:12.005779+00:00"
+      },
+      {
+        "_id": "6ad7832a0d42938a8628deb4",
+        "evidence_id": "EV-PH4-001",
+        "blockchain_registered": true,
+        "blockchain_tx": "0x2470480822d0fe208ce39abb8929254f47b45716067e987258b30348e4d9d1e7",
+        "case_id": "CV-PH4-001",
+        "custodian": "investigator1",
+        "file_hash": "55468452ec534edc3bafa924f91577bc1f244fcff2fc66771b554182aadd71b8",
+        "file_path": "D:\\parjaayi project\\CHAINVAULT\\backend\\storage\\evidence\\f9e7dfad_artifact_001.bin",
+        "file_size": 40,
+        "filename": "artifact_001.bin",
+        "stored_filename": "f9e7dfad_artifact_001.bin",
+        "uploaded_at": "2026-10-20T15:05:14.753457+00:00",
+        "block_number": 101,
+        "contract_address": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+      }
+    ],
+    "audit_logs": [
+      {
+        "_id": "6ad782b0c61bb2d4aeaee981",
+        "schema_version": 1,
+        "event_id": "EVT-EV-PH4-DEBUG-0001-2F5306",
+        "log_id": "EVT-EV-PH4-DEBUG-0001-2F5306",
+        "evidence_id": "EV-PH4-DEBUG",
+        "case_id": "CV-DEBUG",
+        "actor_id": "investigator1",
+        "action": "EVIDENCE_INGESTION",
+        "timestamp": "2026-10-20T15:03:12.005779+00:00",
+        "sequence_number": 1,
+        "previous_event_hash": "GENESIS",
+        "anchor_reference": null,
+        "blockchain_tx": null,
+        "details": {
+          "file_hash": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+          "filename": "test.bin",
+          "file_size": 5,
+          "previous_custodian": "None",
+          "new_custodian": "investigator1",
+          "reason": "Initial digital evidence ingestion"
+        },
+        "previous_custodian": "None",
+        "new_custodian": "investigator1",
+        "reason": "Initial digital evidence ingestion",
+        "event_hash": "dad806bf5049405a171840d8e4e54bab2319161504375bfa9ac2d55ad7741c73"
+      },
+      {
+        "_id": "6ad7832ae2cb72c6d5b7e608",
+        "schema_version": 1,
+        "event_id": "EVT-EV-PH4-001-0001-F34E97",
+        "log_id": "EVT-EV-PH4-001-0001-F34E97",
+        "evidence_id": "EV-PH4-001",
+        "case_id": "CV-PH4-001",
+        "actor_id": "investigator1",
+        "action": "EVIDENCE_INGESTION",
+        "timestamp": "2026-10-20T15:05:14.753457+00:00",
+        "sequence_number": 1,
+        "previous_event_hash": "GENESIS",
+        "anchor_reference": null,
+        "blockchain_tx": null,
+        "details": {
+          "file_hash": "55468452ec534edc3bafa924f91577bc1f244fcff2fc66771b554182aadd71b8",
+          "filename": "artifact_001.bin",
+          "file_size": 40,
+          "previous_custodian": "None",
+          "new_custodian": "investigator1",
+          "reason": "Initial digital evidence ingestion"
+        },
+        "previous_custodian": "None",
+        "new_custodian": "investigator1",
+        "reason": "Initial digital evidence ingestion",
+        "event_hash": "0ab74796602bb3f794388bdf89af2ae5a8a58c682533f1a6eded570e2155e58e"
+      },
+      {
+        "_id": "6ad7832ce2cb72c6d5b7e609",
+        "schema_version": 1,
+        "event_id": "EVT-EV-PH4-001-0002-859D19",
+        "log_id": "EVT-EV-PH4-001-0002-859D19",
+        "evidence_id": "EV-PH4-001",
+        "case_id": "CV-PH4-001",
+        "actor_id": "investigator1",
+        "action": "BLOCKCHAIN_REGISTRATION",
+        "timestamp": "2026-10-20T15:05:16.844953Z",
+        "sequence_number": 2,
+        "previous_event_hash": "0ab74796602bb3f794388bdf89af2ae5a8a58c682533f1a6eded570e2155e58e",
+        "anchor_reference": "0x2470480822d0fe208ce39abb8929254f47b45716067e987258b30348e4d9d1e7",
+        "blockchain_tx": "0x2470480822d0fe208ce39abb8929254f47b45716067e987258b30348e4d9d1e7",
+        "details": {
+          "file_hash": "55468452ec534edc3bafa924f91577bc1f244fcff2fc66771b554182aadd71b8",
+          "tx_hash": "0x2470480822d0fe208ce39abb8929254f47b45716067e987258b30348e4d9d1e7",
+          "block_number": 101,
+          "contract_address": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+        },
+        "previous_custodian": null,
+        "new_custodian": null,
+        "reason": null,
+        "event_hash": "9523d0bfce9c791655b32c144e589ad5fb404a4eaf9e6fde4a2e8c7fe01c2c4d"
+      }
+    ],
+    "custody_transactions": [],
+    "idempotency_records": [],
+    "blockchain_checkpoints": [
+      {
+        "_id": "6ad7832c0d42938a8628deb5",
+        "evidence_id": "EV-PH4-001",
+        "block_number": 101,
+        "chain_id": 31337,
+        "checkpoint_id": "CHK-EV-PH4-001",
+        "contract_address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        "file_hash": "55468452ec534edc3bafa924f91577bc1f244fcff2fc66771b554182aadd71b8",
+        "tx_hash": "0x2470480822d0fe208ce39abb8929254f47b45716067e987258b30348e4d9d1e7"
+      }
+    ],
+    "reports": [],
+    "users": [],
+    "custody_logs": []
+  },
+  "total_records": 6
+}

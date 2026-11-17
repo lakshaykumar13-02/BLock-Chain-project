@@ -20,10 +20,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await loginUser(username, password);
                 if (response.ok) {
                     const data = await response.json();
+                    sessionStorage.clear();
                     sessionStorage.setItem('access_token', data.access_token);
                     sessionStorage.setItem('user_id', data.user_id);
+                    sessionStorage.setItem('username', data.username || username);
                     sessionStorage.setItem('role', data.role);
-                    window.location.href = 'dashboard.html?v=' + Date.now();
+                    sessionStorage.setItem('display_name', data.display_name || data.full_name || data.username || username);
+
+                    if (data.role === 'SUPER_ADMIN') {
+                        window.location.href = 'superadmin.html?v=' + Date.now();
+                    } else if (data.role === 'EMPLOYEE') {
+                        window.location.href = 'employee.html?v=' + Date.now();
+                    } else {
+                        window.location.href = 'dashboard.html?v=' + Date.now();
+                    }
                 } else {
                     const err = await response.json().catch(() => ({}));
                     if (loginError) {

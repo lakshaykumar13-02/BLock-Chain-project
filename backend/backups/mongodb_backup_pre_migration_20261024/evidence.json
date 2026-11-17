@@ -1,0 +1,36 @@
+[
+  {
+    "_id": {
+      "$oid": "6ad782b00d42938a8628dea6"
+    },
+    "evidence_id": "EV-PH4-DEBUG",
+    "blockchain_registered": false,
+    "blockchain_tx": null,
+    "case_id": "CV-DEBUG",
+    "custodian": "investigator1",
+    "file_hash": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+    "file_path": "D:\\parjaayi project\\CHAINVAULT\\backend\\storage\\evidence\\a9e68179_test.bin",
+    "file_size": 5,
+    "filename": "test.bin",
+    "stored_filename": "a9e68179_test.bin",
+    "uploaded_at": "2026-10-20T15:03:12.005779+00:00"
+  },
+  {
+    "_id": {
+      "$oid": "6ad7832a0d42938a8628deb4"
+    },
+    "evidence_id": "EV-PH4-001",
+    "blockchain_registered": true,
+    "blockchain_tx": "0x2470480822d0fe208ce39abb8929254f47b45716067e987258b30348e4d9d1e7",
+    "case_id": "CV-PH4-001",
+    "custodian": "investigator1",
+    "file_hash": "55468452ec534edc3bafa924f91577bc1f244fcff2fc66771b554182aadd71b8",
+    "file_path": "D:\\parjaayi project\\CHAINVAULT\\backend\\storage\\evidence\\f9e7dfad_artifact_001.bin",
+    "file_size": 40,
+    "filename": "artifact_001.bin",
+    "stored_filename": "f9e7dfad_artifact_001.bin",
+    "uploaded_at": "2026-10-20T15:05:14.753457+00:00",
+    "block_number": 101,
+    "contract_address": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  }
+]

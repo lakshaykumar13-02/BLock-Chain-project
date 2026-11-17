@@ -10,7 +10,8 @@ STORAGE_DIR = os.getenv("STORAGE_PATH", "storage/evidence")
 def get_storage_path() -> Path:
     """Return absolute Path to evidence storage directory, creating if absent."""
     base_path = Path(__file__).resolve().parent.parent.parent
-    target_path = (base_path / STORAGE_DIR).resolve()
+    p = Path(STORAGE_DIR)
+    target_path = p.resolve() if p.is_absolute() else (base_path / p).resolve()
     target_path.mkdir(parents=True, exist_ok=True)
     return target_path
 
@@ -35,7 +36,7 @@ def get_file_path(filename: str) -> Path | None:
     Safely resolve file path preventing path traversal outside storage directory.
     Returns Path object if valid, None if directory traversal or file not found.
     """
-    if not filename or ".." in filename or "/" in filename or "\\" in filename:
+    if not filename or ".." in filename or "/" in filename or "\\" in filename or "\x00" in filename:
         return None
 
     safe_name = os.path.basename(filename)

@@ -1,0 +1,45 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "audit_logs",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "evidence_id", "order": "ASCENDING" },
+        { "fieldPath": "sequence_number", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "custody_transactions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "evidence_id", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "custody_transactions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "evidence_id", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "reports",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "case_id", "order": "ASCENDING" },
+        { "fieldPath": "generated_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "cases",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "is_deleted", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

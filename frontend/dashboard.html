@@ -20,7 +20,20 @@
             <li><a href="#evidence" data-view="evidence">Evidence</a></li>
             <li><a href="#blockchain" data-view="blockchain">Blockchain Audit</a></li>
             <li><a href="#reports" data-view="reports">Reports</a></li>
+            <li id="navItemEmployees" style="display:none;"><a href="#employees" data-view="employees" style="color:#10b981; font-weight:600;">👥 Employees & Tasks</a></li>
         </ul>
+        <!-- Dynamic Authenticated User Profile in Sidebar -->
+        <div class="sidebar-user-section">
+            <div class="sidebar-user-card" id="sidebarUserCard" title="Click to edit display name">
+                <div class="sidebar-user-avatar" id="sidebarUserAvatar">AD</div>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name" id="sidebarUserName">Loading...</div>
+                    <div class="sidebar-user-id" id="sidebarUserId">--</div>
+                    <div class="sidebar-user-badge-role" id="sidebarUserRole">ADMIN</div>
+                </div>
+                <button type="button" class="btn-edit-profile" id="btnEditProfile" title="Edit Display Name">✏️</button>
+            </div>
+        </div>
         <div class="logout-container">
             <button id="logoutBtn" class="btn-outline">Logout</button>
         </div>
@@ -35,9 +48,9 @@
         <header class="dashboard-header">
             <h2 id="pageTitle">Dashboard Overview</h2>
             <div style="display:flex; align-items:center; gap: 1rem;">
-                <div id="userBadge" class="user-badge">
-                    <span id="userBadgeRole">INVESTIGATOR</span>
-                    <strong id="userBadgeName">investigator1</strong>
+                <div id="userBadge" class="user-badge" style="cursor:pointer;" title="Click to view/edit profile">
+                    <span id="userBadgeRole">ADMIN</span>
+                    <strong id="userBadgeName">Loading...</strong>
                 </div>
                 <div class="system-status">
                     <span class="status-indicator"></span>
@@ -264,27 +277,34 @@
 
             <!-- Audit Trail Table -->
             <div class="panel">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                    <h3 style="margin-bottom:0; border:none;">Custody Audit Trail History</h3>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+                    <h3 style="margin-bottom:0; border:none;">Custody Audit Trail History & Independent Verification</h3>
                     <div style="display:flex; gap:0.5rem;">
                         <input type="text" id="auditQueryId" placeholder="Evidence ID..." style="padding:0.3rem 0.6rem; font-size:0.8rem; border-radius:4px; background:var(--primary-color); border:1px solid var(--accent-color); color:var(--text-light);">
                         <button id="btnFetchAuditLogs" class="btn-sm btn-primary">Load History</button>
+                        <button id="btnVerifyAuditTrail" class="btn-sm btn-success" style="background:#27ae60;">Verify Audit Trail</button>
                     </div>
                 </div>
+
+                <!-- Audit Verification Status Banner -->
+                <div id="auditVerificationBanner" style="display:none; margin-bottom:1rem; padding:0.75rem 1rem; border-radius:6px; font-size:0.85rem;"></div>
+
                 <div class="table-responsive">
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Log ID</th>
+                                <th>Seq #</th>
+                                <th>Event ID</th>
                                 <th>Action</th>
-                                <th>Previous Custodian</th>
-                                <th>New Custodian</th>
+                                <th>Custodian / Actor</th>
                                 <th>Timestamp</th>
-                                <th>On-Chain TX</th>
+                                <th>Event Hash</th>
+                                <th>Chain Link</th>
+                                <th>On-Chain Anchor</th>
                             </tr>
                         </thead>
                         <tbody id="auditTableBody">
-                            <tr><td colspan="6" class="empty-state">Enter an Evidence ID to view chronological audit trail.</td></tr>
+                            <tr><td colspan="8" class="empty-state">Enter an Evidence ID to view chronological audit trail and verify integrity.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -337,6 +357,70 @@
                         </tbody>
                     </table>
                 </div>
+        <!-- ============================================================ -->
+        <!-- VIEW 6: EMPLOYEES & TASK MANAGEMENT (ADMIN EXCLUSIVE)         -->
+        <!-- ============================================================ -->
+        <section id="view-employees" class="dashboard-view">
+            <div class="panel">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+                    <div>
+                        <h3 style="margin:0; border:none;">Employee Account Directory</h3>
+                        <p style="margin:0.2rem 0 0; color:#94a3b8; font-size:0.85rem;">Manage operational employees, credential lifecycle, and active account status.</p>
+                    </div>
+                    <div style="display:flex; gap:0.5rem;">
+                        <button id="btnRefreshEmployees" class="btn-sm btn-primary">Refresh</button>
+                        <button id="btnOpenCreateEmployee" class="btn-sm btn-primary" style="background:#10b981;">+ New Employee</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>User ID</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeesTableBody">
+                            <tr><td colspan="6" class="empty-state">Loading employee directory...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-top:1.5rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+                    <div>
+                        <h3 style="margin:0; border:none;">Dispatched Operational Tasks</h3>
+                        <p style="margin:0.2rem 0 0; color:#94a3b8; font-size:0.85rem;">Assign forensic workflows and monitor employee progress across cases.</p>
+                    </div>
+                    <div style="display:flex; gap:0.5rem;">
+                        <button id="btnRefreshAdminTasks" class="btn-sm btn-primary">Refresh Tasks</button>
+                        <button id="btnOpenCreateTask" class="btn-sm btn-primary" style="background:#38bdf8;">+ Dispatch New Task</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Task ID</th>
+                                <th>Title</th>
+                                <th>Case ID</th>
+                                <th>Assigned To</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Progress</th>
+                                <th>Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTasksTableBody">
+                            <tr><td colspan="8" class="empty-state">Loading dispatched tasks...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
     </main>
@@ -375,7 +459,117 @@
         </div>
     </div>
 
-    <script src="js/api.js?v=3"></script>
-    <script src="js/dashboard.js?v=3"></script>
+    <!-- Edit Profile Modal -->
+    <div id="modalEditProfile" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Edit Profile Display Name</h3>
+                <button class="modal-close" onclick="closeModal('modalEditProfile')">&times;</button>
+            </div>
+            <form id="formEditProfile">
+                <div style="padding: 1rem 0;">
+                    <div id="editProfileError" class="error-msg" style="display:none; margin-bottom:1rem; color:var(--danger); background:rgba(231,76,60,0.1); padding:0.6rem; border-radius:4px;"></div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display:block; margin-bottom: 0.5rem; font-size:0.875rem; color:var(--text-light);">Badge ID / Username (Immutable)</label>
+                        <input type="text" id="editProfileUsername" readonly style="width:100%; padding:0.6rem; background:var(--primary-color); border:1px solid var(--accent-color); color:var(--text-light); border-radius:4px; opacity:0.8; cursor:not-allowed;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label for="editProfileDisplayName" style="display:block; margin-bottom: 0.5rem; font-size:0.875rem; color:var(--text-light);">Display Name / Forensic Unit *</label>
+                        <input type="text" id="editProfileDisplayName" required placeholder="e.g. Lead Investigator Smith" style="width:100%; padding:0.6rem; background:var(--secondary-color); border:1px solid var(--accent-color); color:#fff; border-radius:4px;">
+                        <div style="font-size:0.75rem; color:var(--highlight-color); margin-top:0.35rem;">Displayed in the sidebar, header, and forensic activity logs.</div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1rem;">
+                    <button type="button" class="btn-outline" onclick="closeModal('modalEditProfile')">Cancel</button>
+                    <button type="submit" class="btn" style="background:var(--success);">Save Profile</button>
+                </div>
+            </form>
+        </div>
+    <!-- Create Employee Modal -->
+    <div id="modalCreateEmployee" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Provision New Employee</h3>
+                <button class="modal-close" onclick="closeModal('modalCreateEmployee')">&times;</button>
+            </div>
+            <form id="formCreateEmployee">
+                <div style="padding: 1rem 0;">
+                    <div id="createEmployeeError" class="error-msg" style="display:none; margin-bottom:1rem; color:var(--danger); background:rgba(231,76,60,0.1); padding:0.6rem; border-radius:4px;"></div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label for="newEmpUsername" style="display:block; margin-bottom:0.5rem; font-size:0.875rem;">Username / Badge ID *</label>
+                        <input type="text" id="newEmpUsername" required placeholder="e.g. employee2" style="width:100%; padding:0.6rem; background:var(--secondary-color); border:1px solid var(--accent-color); color:#fff; border-radius:4px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label for="newEmpFullName" style="display:block; margin-bottom:0.5rem; font-size:0.875rem;">Full Name / Role Title</label>
+                        <input type="text" id="newEmpFullName" placeholder="e.g. Evidence Logistics Assistant" style="width:100%; padding:0.6rem; background:var(--secondary-color); border:1px solid var(--accent-color); color:#fff; border-radius:4px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label for="newEmpPassword" style="display:block; margin-bottom:0.5rem; font-size:0.875rem;">Initial Password * (min 8 chars)</label>
+                        <input type="password" id="newEmpPassword" required placeholder="••••••••••••" style="width:100%; padding:0.6rem; background:var(--secondary-color); border:1px solid var(--accent-color); color:#fff; border-radius:4px;">
+                    </div>
+                </div>
+                <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:0.75rem;">
+                    <button type="button" class="btn-outline" onclick="closeModal('modalCreateEmployee')">Cancel</button>
+                    <button type="submit" class="btn" style="background:#10b981;">Create Employee</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dispatch Task Modal -->
+    <div id="modalCreateTask" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Dispatch Operational Task</h3>
+                <button class="modal-close" onclick="closeModal('modalCreateTask')">&times;</button>
+            </div>
+            <form id="formCreateTask">
+                <div style="padding: 1rem 0;">
+                    <div id="createTaskError" class="error-msg" style="display:none; margin-bottom:1rem; color:var(--danger); background:rgba(231,76,60,0.1); padding:0.6rem; border-radius:4px;"></div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label for="taskTitle" style="display:block; margin-bottom:0.5rem; font-size:0.875rem;">Task Title *</label>
+                        <input type="text" id="taskTitle" required placeholder="e.g. Verify Mobile Storage Dump Hash" style="width:100%; padding:0.6rem; background:var(--secondary-color); border:1px solid var(--accent-color); color:#fff; border-radius:4px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label for="taskAssignee" style="display:block; margin-bottom:0.5rem; font-size:0.875rem;">Assign To Employee *</label>
+                        <select id="taskAssignee" required style="width:100%; padding:0.6rem; background:var(--secondary-color); border:1px solid var(--accent-color); color:#fff; border-radius:4px;">
+                            <option value="">Select an employee...</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label for="taskCaseId" style="display:block; margin-bottom:0.5rem; font-size:0.875rem;">Case Reference *</label>
+                        <select id="taskCaseId" required style="width:100%; padding:0.6rem; background:var(--secondary-color); border:1px solid var(--accent-color); color:#fff; border-radius:4px;">
+                            <option value="">Select a case...</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label for="taskEvidenceIds" style="display:block; margin-bottom:0.5rem; font-size:0.875rem;">Permitted Evidence IDs (comma-separated)</label>
+                        <input type="text" id="taskEvidenceIds" placeholder="e.g. EV-001, EV-002" style="width:100%; padding:0.6rem; background:var(--secondary-color); border:1px solid var(--accent-color); color:#fff; border-radius:4px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label for="taskPriority" style="display:block; margin-bottom:0.5rem; font-size:0.875rem;">Priority</label>
+                        <select id="taskPriority" style="width:100%; padding:0.6rem; background:var(--secondary-color); border:1px solid var(--accent-color); color:#fff; border-radius:4px;">
+                            <option value="LOW">Low</option>
+                            <option value="MEDIUM" selected>Medium</option>
+                            <option value="HIGH">High</option>
+                            <option value="CRITICAL">Critical</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label for="taskDescription" style="display:block; margin-bottom:0.5rem; font-size:0.875rem;">Instructions / Details</label>
+                        <textarea id="taskDescription" rows="3" placeholder="Specific steps and instructions for the employee..." style="width:100%; padding:0.6rem; background:var(--secondary-color); border:1px solid var(--accent-color); color:#fff; border-radius:4px;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:0.75rem;">
+                    <button type="button" class="btn-outline" onclick="closeModal('modalCreateTask')">Cancel</button>
+                    <button type="submit" class="btn" style="background:#38bdf8; color:#0f172a; font-weight:700;">Dispatch Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/config.js?v=6"></script>
+    <script src="js/api.js?v=6"></script>
+    <script src="js/dashboard.js?v=6"></script>
 </body>
 </html>

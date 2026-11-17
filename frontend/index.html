@@ -11,12 +11,36 @@
         <div class="logo">ChainVault</div>
         <nav>
             <a href="login.html">Login</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="employee.html">Employee Portal</a>
+            <a href="superadmin.html">Platform Owner</a>
         </nav>
     </header>
     <main class="hero">
         <h1>Blockchain-Based Digital Evidence Integrity & Chain-of-Custody Platform</h1>
         <p>Secure, Immutable, and Traceable Digital Forensics Management.</p>
-        <a href="login.html" class="btn">Access Vault</a>
+        <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap;">
+            <a href="login.html" class="btn">Access Vault / Sign In</a>
+            <a href="employee.html" class="btn btn-outline" style="border-color:#10b981; color:#10b981;">Employee Portal</a>
+            <a href="superadmin.html" class="btn btn-outline">Platform Owner Portal</a>
+        </div>
     </main>
+    <script src="js/config.js?v=5"></script>
+    <script>
+        // Automatic session resumption
+        try {
+            const token = sessionStorage.getItem('access_token');
+            const role = sessionStorage.getItem('role');
+            if (token) {
+                if (role === 'SUPER_ADMIN') {
+                    window.location.href = 'superadmin.html';
+                } else if (role === 'EMPLOYEE') {
+                    window.location.href = 'employee.html';
+                } else {
+                    window.location.href = 'dashboard.html';
+                }
+            }
+        } catch(e) {}
+    </script>
 </body>
 </html>

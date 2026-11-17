@@ -1,5 +1,7 @@
 # Environments
 .env
+.env.*
+!.env.example
 .venv
 env/
 venv/
@@ -12,6 +14,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
+.pytest_cache/
+.coverage
+htmlcov/
 
 # Node
 node_modules/
@@ -45,3 +50,20 @@ CHAINVAULT/backend/generated_reports/*
 !CHAINVAULT/backend/generated_reports/.gitkeep
 backend/storage/*.bin
 backend/storage/*.tmp
+
+# Cloud & Service Account Credentials
+*.pem
+*.key
+*service_account*.json
+*service-account*.json
+*credentials*.json
+*firebase-adminsdk*.json
+*gcp-key*.json
+*sa-key*.json
+secrets/
+backend/secrets/
+
+# Firebase & Cloud Logs
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*

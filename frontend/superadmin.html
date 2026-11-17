@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Platform Owner Console — ChainVault</title>
+    <link rel="stylesheet" href="css/superadmin.css?v=4">
+</head>
+<body class="superadmin-body">
+
+    <!-- ==================================================================== -->
+    <!-- SIDEBAR NAVIGATION (Platform Owner Console)                          -->
+    <!-- ==================================================================== -->
+    <aside class="sa-sidebar">
+        <!-- Brand Header -->
+        <div class="sa-brand">
+            <div class="sa-brand-icon">⚡</div>
+            <div class="sa-brand-text">
+                <h1>ChainVault</h1>
+                <span>Platform Owner Console</span>
+            </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="sa-nav">
+            <div class="sa-nav-heading">Platform Governance</div>
+            <ul class="sa-nav-list">
+                <li class="sa-nav-item active" data-view="overview">
+                    <a href="#overview">
+                        <span class="sa-nav-icon">📊</span>
+                        <span>Platform Overview</span>
+                    </a>
+                </li>
+                <li class="sa-nav-item" data-view="admins">
+                    <a href="#admins">
+                        <span class="sa-nav-icon">👥</span>
+                        <span>Admin Management</span>
+                    </a>
+                </li>
+                <li class="sa-nav-item" id="navItemAddAdmin">
+                    <a href="#add-admin">
+                        <span class="sa-nav-icon">➕</span>
+                        <span>Create Admin</span>
+                    </a>
+                </li>
+                <li class="sa-nav-item" data-view="audit">
+                    <a href="#audit">
+                        <span class="sa-nav-icon">📜</span>
+                        <span>Admin Activity & Audit</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sa-nav-heading">Platform Operations</div>
+            <ul class="sa-nav-list">
+                <li class="sa-nav-item" data-view="security">
+                    <a href="#security">
+                        <span class="sa-nav-icon">🛡️</span>
+                        <span>Platform Security</span>
+                    </a>
+                </li>
+                <li class="sa-nav-item" data-view="system">
+                    <a href="#system">
+                        <span class="sa-nav-icon">⚙️</span>
+                        <span>System Overview</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sa-nav-heading">Evidence Workspace</div>
+            <ul class="sa-nav-list">
+                <li class="sa-nav-item">
+                    <a href="dashboard.html" style="color: #60a5fa;">
+                        <span class="sa-nav-icon">📁</span>
+                        <span>Evidence & Cases Dashboard</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Sidebar Footer -->
+        <div class="sa-sidebar-footer">
+            <div class="sa-owner-card">
+                <div class="sa-owner-avatar">SA</div>
+                <div class="sa-owner-info">
+                    <div id="saOwnerUsername" class="sa-owner-name">superadmin</div>
+                    <div class="sa-owner-role">SUPER_ADMIN (ROOT)</div>
+                </div>
+            </div>
+            <button id="saLogoutBtn" class="sa-btn-logout">
+                <span>🚪</span> Sign Out of Console
+            </button>
+        </div>
+    </aside>
+
+    <!-- ==================================================================== -->
+    <!-- MAIN CONTENT CANVAS                                                  -->
+    <!-- ==================================================================== -->
+    <main class="sa-main">
+        <!-- Toast Notification Banner -->
+        <div id="saToast" class="sa-toast"></div>
+
+        <!-- Global Header -->
+        <header class="sa-header">
+            <div class="sa-header-title">
+                <h2 id="saHeaderTitle">Platform Overview</h2>
+                <span id="saHeaderSubtitle">ChainVault Infrastructure & Administrator Accounts Directorate</span>
+            </div>
+            <div class="sa-header-actions">
+                <div class="sa-status-badge">
+                    <span class="sa-status-dot"></span>
+                    <span id="saSystemStatusText">API Online</span>
+                </div>
+                <button id="saRefreshBtn" class="sa-btn-secondary">
+                    <span>🔄</span> Refresh
+                </button>
+                <button id="saHeaderAddAdminBtn" class="sa-btn-primary">
+                    <span>➕</span> Add Admin
+                </button>
+            </div>
+        </header>
+
+        <!-- Scrollable Content Area -->
+        <div class="sa-content-area">
+
+            <!-- ============================================================ -->
+            <!-- VIEW 1: PLATFORM OVERVIEW                                    -->
+            <!-- ============================================================ -->
+            <section id="sa-view-overview" class="sa-view active">
+                <!-- KPI Cards -->
+                <div class="sa-kpi-grid">
+                    <div class="sa-kpi-card accent">
+                        <div class="sa-kpi-header">
+                            <span>Total Administrators</span>
+                            <span class="sa-kpi-icon">👥</span>
+                        </div>
+                        <div id="kpiTotalAdmins" class="sa-kpi-value">--</div>
+                        <div class="sa-kpi-subtitle">Registered tenant administrative operators</div>
+                    </div>
+
+                    <div class="sa-kpi-card success">
+                        <div class="sa-kpi-header">
+                            <span>Active Administrators</span>
+                            <span class="sa-kpi-icon">✅</span>
+                        </div>
+                        <div id="kpiActiveAdmins" class="sa-kpi-value" style="color: var(--sa-success);">--</div>
+                        <div class="sa-kpi-subtitle">Enabled accounts with valid session authorization</div>
+                    </div>
+
+                    <div class="sa-kpi-card warning">
+                        <div class="sa-kpi-header">
+                            <span>Inactive / Suspended</span>
+                            <span class="sa-kpi-icon">⏸️</span>
+                        </div>
+                        <div id="kpiInactiveAdmins" class="sa-kpi-value" style="color: var(--sa-warning);">--</div>
+                        <div class="sa-kpi-subtitle">Deactivated accounts with revoked JWT tokens</div>
+                    </div>
+
+                    <div class="sa-kpi-card">
+                        <div class="sa-kpi-header">
+                            <span>Governance Audit Logs</span>
+                            <span class="sa-kpi-icon">📜</span>
+                        </div>
+                        <div id="kpiAuditEvents" class="sa-kpi-value">--</div>
+                        <div class="sa-kpi-subtitle">Immutable platform governance lifecycle events</div>
+                    </div>
+                </div>
+
+                <!-- Split Grid: Recently Created Admins & Recent Account Activity -->
+                <div class="sa-grid-split">
+                    <!-- Left: Recent Admin Accounts -->
+                    <div class="sa-panel">
+                        <div class="sa-panel-header">
+                            <h3><span>👤</span> Recently Created Administrators</h3>
+                            <a href="#admins" class="sa-panel-action" id="linkViewAllAdmins">View All Directory →</a>
+                        </div>
+                        <div class="sa-table-wrapper">
+                            <table class="sa-table">
+                                <thead>
+                                    <tr>
+                                        <th>Administrator</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="overviewAdminsTbody">
+                                    <tr><td colspan="3" style="text-align:center; color:var(--sa-text-dim); padding:1.5rem;">Loading administrators...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right: Recent Account Governance Activity -->
+                    <div class="sa-panel">
+                        <div class="sa-panel-header">
+                            <h3><span>⚡</span> Recent Account-Management Activity</h3>
+                            <a href="#audit" class="sa-panel-action" id="linkViewAllAudit">Full Audit Trail →</a>
+                        </div>
+                        <div id="overviewAuditStream">
+                            <div style="text-align:center; color:var(--sa-text-dim); padding:1.5rem;">Loading audit feed...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Platform Architecture Summary Banner -->
+                <div class="sa-panel" style="background: linear-gradient(180deg, var(--sa-bg-card) 0%, rgba(15, 23, 42, 0.9) 100%);">
+                    <div class="sa-panel-header">
+                        <h3><span>🏛️</span> Platform Authority & Infrastructure Architecture</h3>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; font-size: 0.85rem;">
+                        <div style="padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 6px; border: 1px solid var(--sa-border);">
+                            <div style="color: var(--sa-text-muted); font-size: 0.75rem;">ROLE HIERARCHY</div>
+                            <div style="color: #fff; font-weight: 600; margin-top: 0.2rem;">SUPER_ADMIN (Root Console)</div>
+                            <div style="color: var(--sa-text-dim); font-size: 0.75rem; margin-top: 0.25rem;">Dedicated account governance; isolated from company evidence.</div>
+                        </div>
+                        <div style="padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 6px; border: 1px solid var(--sa-border);">
+                            <div style="color: var(--sa-text-muted); font-size: 0.75rem;">DATABASE TIER</div>
+                            <div id="overviewDbStatus" style="color: #fff; font-weight: 600; margin-top: 0.2rem;">Google Cloud Firestore (Active)</div>
+                            <div style="color: var(--sa-text-dim); font-size: 0.75rem; margin-top: 0.25rem;">MongoDB retained as authoritative offline rollback source.</div>
+                        </div>
+                        <div style="padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 6px; border: 1px solid var(--sa-border);">
+                            <div style="color: var(--sa-text-muted); font-size: 0.75rem;">BLOCKCHAIN ANCHOR</div>
+                            <div id="overviewBcStatus" style="color: #fff; font-weight: 600; margin-top: 0.2rem;">Checking node...</div>
+                            <div style="color: var(--sa-text-dim); font-size: 0.75rem; margin-top: 0.25rem;">Cryptographic evidence digest anchoring.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================ -->
+            <!-- VIEW 2: ADMIN MANAGEMENT DIRECTORY                          -->
+            <!-- ============================================================ -->
+            <section id="sa-view-admins" class="sa-view">
+                <!-- Toolbar with Search, Status Filter, and Add Admin -->
+                <div class="sa-toolbar">
+                    <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                        <div class="sa-search-box">
+                            <span>🔍</span>
+                            <input type="text" id="adminSearchInput" placeholder="Search by username or name...">
+                        </div>
+                        <select id="adminStatusFilter" class="sa-filter-select">
+                            <option value="ALL">All Account Statuses</option>
+                            <option value="ACTIVE">Active Only</option>
+                            <option value="INACTIVE">Inactive Only</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.75rem;">
+                        <button id="refreshAdminsTableBtn" class="sa-btn-secondary">
+                            <span>🔄</span> Refresh Table
+                        </button>
+                        <button id="addAdminFromViewBtn" class="sa-btn-primary">
+                            <span>➕</span> Add Admin
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Admin Accounts Table -->
+                <div class="sa-table-wrapper">
+                    <table class="sa-table">
+                        <thead>
+                            <tr>
+                                <th>Administrator Badge</th>
+                                <th>Display Name / Unit</th>
+                                <th>Account Status</th>
+                                <th>Created Date</th>
+                                <th>Last Activity</th>
+                                <th style="text-align: right;">Management Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminsDirectoryTbody">
+                            <tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--sa-text-dim);">Loading administrator accounts...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 1rem; font-size: 0.8rem; color: var(--sa-text-dim);">
+                    <div id="adminsCountLabel">Showing 0 administrators</div>
+                    <div>Safe credential workflow: passwords and hashes are never exposed.</div>
+                </div>
+            </section>
+
+            <!-- ============================================================ -->
+            <!-- VIEW 3: ADMIN ACTIVITY & AUDIT LOGS                          -->
+            <!-- ============================================================ -->
+            <section id="sa-view-audit" class="sa-view">
+                <div class="sa-toolbar">
+                    <div style="display:flex; align-items:center; gap:0.75rem;">
+                        <div class="sa-search-box">
+                            <span>🔍</span>
+                            <input type="text" id="auditSearchInput" placeholder="Search actions, targets, or actors...">
+                        </div>
+                        <select id="auditActionFilter" class="sa-filter-select">
+                            <option value="ALL">All Governance Actions</option>
+                            <option value="ADMIN_ACCOUNT_CREATED">Account Created</option>
+                            <option value="ADMIN_STATUS_CHANGED">Status Changed</option>
+                            <option value="ADMIN_PASSWORD_RESET">Password Reset</option>
+                            <option value="ADMIN_ACCOUNT_REMOVED">Account Removed</option>
+                        </select>
+                    </div>
+                    <button id="refreshAuditBtn" class="sa-btn-secondary">
+                        <span>🔄</span> Refresh Trail
+                    </button>
+                </div>
+
+                <div class="sa-table-wrapper">
+                    <table class="sa-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp (UTC)</th>
+                                <th>Action Event</th>
+                                <th>Actor Authority</th>
+                                <th>Target Account</th>
+                                <th>Outcome</th>
+                                <th>Audit Context</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditTrailTbody">
+                            <tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--sa-text-dim);">Loading governance audit events...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ============================================================ -->
+            <!-- VIEW 4: PLATFORM SECURITY ARCHITECTURE                       -->
+            <!-- ============================================================ -->
+            <section id="sa-view-security" class="sa-view">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+                    <!-- RBAC Policy -->
+                    <div class="sa-panel">
+                        <div class="sa-panel-header">
+                            <h3><span>🛡️</span> Role-Based Authorization Guardrails</h3>
+                        </div>
+                        <ul style="list-style:none; display:flex; flex-direction:column; gap:0.75rem; font-size:0.875rem;">
+                            <li style="padding:0.75rem; background:rgba(0,0,0,0.2); border-radius:6px; border-left:3px solid var(--sa-primary);">
+                                <strong style="color:#fff;">SUPER_ADMIN (Platform Owner)</strong>
+                                <p style="color:var(--sa-text-muted); font-size:0.8rem; margin-top:0.25rem;">
+                                    Full administrator lifecycle governance. Denied direct access to company evidence files and operational cases to preserve tenant boundary.
+                                </p>
+                            </li>
+                            <li style="padding:0.75rem; background:rgba(0,0,0,0.2); border-radius:6px; border-left:3px solid var(--sa-accent);">
+                                <strong style="color:#fff;">ADMIN (Operational Authority)</strong>
+                                <p style="color:var(--sa-text-muted); font-size:0.8rem; margin-top:0.25rem;">
+                                    Case creation, evidence custody transfers, PDF forensic reports, blockchain anchoring. Strictly denied all Super Admin account-management APIs (HTTP 403).
+                                </p>
+                            </li>
+                            <li style="padding:0.75rem; background:rgba(0,0,0,0.2); border-radius:6px; border-left:3px solid var(--sa-success);">
+                                <strong style="color:#fff;">INVESTIGATOR (Forensic Field Officer)</strong>
+                                <p style="color:var(--sa-text-muted); font-size:0.8rem; margin-top:0.25rem;">
+                                    Custody updates, hash verification, permitted evidence inspection. Denied administrative configuration and Super Admin endpoints (HTTP 403).
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Session Revocation & Anti-Lockout -->
+                    <div class="sa-panel">
+                        <div class="sa-panel-header">
+                            <h3><span>🔒</span> Active Security Controls & Protections</h3>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:0.85rem; font-size:0.85rem;">
+                            <div style="padding:0.75rem; background:rgba(0,0,0,0.2); border-radius:6px;">
+                                <div style="font-weight:600; color:#fff;">⚡ Real-Time Session Invalidation</div>
+                                <p style="color:var(--sa-text-muted); font-size:0.8rem; margin-top:0.2rem;">
+                                    Tokens include an issued-at (<code class="sa-code-badge">iat</code>) timestamp. Deactivating or resetting an admin account immediately invalidates all active JWT tokens on their next request.
+                                </p>
+                            </div>
+                            <div style="padding:0.75rem; background:rgba(0,0,0,0.2); border-radius:6px;">
+                                <div style="font-weight:600; color:#fff;">🛡️ Anti-Lockout Protection</div>
+                                <p style="color:var(--sa-text-muted); font-size:0.8rem; margin-top:0.2rem;">
+                                    The backend strictly rejects deactivation or removal of the last active Super Admin with HTTP 400 Bad Request, guaranteeing console survivability.
+                                </p>
+                            </div>
+                            <div style="padding:0.75rem; background:rgba(0,0,0,0.2); border-radius:6px;">
+                                <div style="font-weight:600; color:#fff;">⚖️ Evidentiary Integrity Preservation</div>
+                                <p style="color:var(--sa-text-muted); font-size:0.8rem; margin-top:0.2rem;">
+                                    When an administrator is removed, historical evidence records, SHA-256 hashes, and chain-of-custody signatures are retained permanently to ensure legal admissible integrity.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================ -->
+            <!-- VIEW 5: SYSTEM OVERVIEW                                      -->
+            <!-- ============================================================ -->
+            <section id="sa-view-system" class="sa-view">
+                <div class="sa-panel" style="margin-bottom: 1.5rem;">
+                    <div class="sa-panel-header">
+                        <h3><span>⚙️</span> ChainVault Infrastructure Diagnostics</h3>
+                        <button id="btnPingSystem" class="sa-btn-primary">
+                            <span>📡</span> Ping All Subsystems
+                        </button>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid var(--sa-border);">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-weight:600; color:#fff;">Backend API</span>
+                                <span id="diagApiBadge" class="sa-badge active">ONLINE</span>
+                            </div>
+                            <div style="margin-top:0.5rem; font-size:0.8rem; color:var(--sa-text-muted);" id="diagApiDetails">
+                                Port: 8000 | Framework: FastAPI / Uvicorn
+                            </div>
+                        </div>
+
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid var(--sa-border);">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-weight:600; color:#fff;">Active Database</span>
+                                <span id="diagDbBadge" class="sa-badge active">FIRESTORE</span>
+                            </div>
+                            <div style="margin-top:0.5rem; font-size:0.8rem; color:var(--sa-text-muted);" id="diagDbDetails">
+                                Project: chainvault-staging (default)
+                            </div>
+                        </div>
+
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid var(--sa-border);">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-weight:600; color:#fff;">Blockchain Node</span>
+                                <span id="diagBcBadge" class="sa-badge active">HARDHAT (31337)</span>
+                            </div>
+                            <div style="margin-top:0.5rem; font-size:0.8rem; color:var(--sa-text-muted);" id="diagBcDetails">
+                                RPC: http://127.0.0.1:8545
+                            </div>
+                        </div>
+
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid var(--sa-border);">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-weight:600; color:#fff;">Storage Directory</span>
+                                <span class="sa-badge info">PERSISTENT</span>
+                            </div>
+                            <div style="margin-top:0.5rem; font-size:0.8rem; color:var(--sa-text-muted);">
+                                Path: backend/storage/evidence/ (242 records)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ==================================================================== -->
+    <!-- MODAL 1: CREATE ADMIN                                                -->
+    <!-- ==================================================================== -->
+    <div id="modalAddAdmin" class="sa-modal-backdrop">
+        <div class="sa-modal">
+            <div class="sa-modal-header">
+                <h3><span>➕</span> Provision New Administrator</h3>
+                <button type="button" class="sa-modal-close" data-close="modalAddAdmin">&times;</button>
+            </div>
+            <form id="formAddAdmin">
+                <div class="sa-modal-body">
+                    <div id="addAdminErrorBanner" style="display:none; padding:0.6rem 0.85rem; border-radius:6px; background:var(--sa-danger-bg); border:1px solid var(--sa-danger); color:var(--sa-danger); font-size:0.85rem; margin-bottom:1rem;"></div>
+
+                    <div class="sa-form-group">
+                        <label for="inputAdminUsername">Username / Badge ID *</label>
+                        <input type="text" id="inputAdminUsername" required placeholder="e.g. admin_cyber" autocomplete="off">
+                        <div class="sa-help-text">3-30 characters, alphanumeric, underscores or hyphens only.</div>
+                    </div>
+
+                    <div class="sa-form-group">
+                        <label for="inputAdminFullName">Display Name / Forensic Unit</label>
+                        <input type="text" id="inputAdminFullName" placeholder="e.g. Sarah Connor (Cyber Unit)" autocomplete="off">
+                        <div class="sa-help-text">Friendly name displayed on audit and governance logs.</div>
+                    </div>
+
+                    <div class="sa-form-group">
+                        <label for="inputAdminPassword">Initial Password *</label>
+                        <input type="password" id="inputAdminPassword" required placeholder="••••••••••••" autocomplete="new-password">
+                        <div class="sa-help-text">Minimum 8 characters (12 in production). Plaintext is never stored or logged.</div>
+                    </div>
+                </div>
+                <div class="sa-modal-footer">
+                    <button type="button" class="sa-btn-secondary" data-close="modalAddAdmin">Cancel</button>
+                    <button type="submit" id="btnSubmitAddAdmin" class="sa-btn-primary">Provision Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================================================================== -->
+    <!-- MODAL 2: RESET ADMIN PASSWORD                                        -->
+    <!-- ==================================================================== -->
+    <div id="modalResetPassword" class="sa-modal-backdrop">
+        <div class="sa-modal">
+            <div class="sa-modal-header">
+                <h3><span>🔑</span> Reset Administrator Password</h3>
+                <button type="button" class="sa-modal-close" data-close="modalResetPassword">&times;</button>
+            </div>
+            <form id="formResetPassword">
+                <div class="sa-modal-body">
+                    <div id="resetErrorBanner" style="display:none; padding:0.6rem 0.85rem; border-radius:6px; background:var(--sa-danger-bg); border:1px solid var(--sa-danger); color:var(--sa-danger); font-size:0.85rem; margin-bottom:1rem;"></div>
+
+                    <div class="sa-form-group">
+                        <label>Target Administrator</label>
+                        <input type="text" id="resetTargetUsernameDisplay" readonly style="opacity:0.8; cursor:not-allowed;">
+                    </div>
+
+                    <div class="sa-form-group">
+                        <label for="inputResetNewPassword">New Password *</label>
+                        <input type="password" id="inputResetNewPassword" required placeholder="Enter new secure password (min 8 chars)" autocomplete="new-password">
+                        <div class="sa-help-text">Minimum 8 characters. Bcrypt hashed on backend.</div>
+                    </div>
+
+                    <div style="padding:0.75rem; background:rgba(245, 158, 11, 0.1); border:1px solid rgba(245, 158, 11, 0.3); border-radius:6px; font-size:0.8rem; color:#fde68a;">
+                        ⚠️ <strong>Session Revocation:</strong> Resetting this password will immediately invalidate all active tokens for this user.
+                    </div>
+                </div>
+                <div class="sa-modal-footer">
+                    <button type="button" class="sa-btn-secondary" data-close="modalResetPassword">Cancel</button>
+                    <button type="submit" id="btnSubmitResetPassword" class="sa-btn-primary">Apply New Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================================================================== -->
+    <!-- MODAL 3: CONFIRM REMOVE ADMIN                                        -->
+    <!-- ==================================================================== -->
+    <div id="modalRemoveAdmin" class="sa-modal-backdrop">
+        <div class="sa-modal">
+            <div class="sa-modal-header">
+                <h3 style="color:var(--sa-danger);"><span>🗑️</span> Confirm Administrator Removal</h3>
+                <button type="button" class="sa-modal-close" data-close="modalRemoveAdmin">&times;</button>
+            </div>
+            <form id="formRemoveAdmin">
+                <div class="sa-modal-body">
+                    <div id="removeErrorBanner" style="display:none; padding:0.6rem 0.85rem; border-radius:6px; background:var(--sa-danger-bg); border:1px solid var(--sa-danger); color:var(--sa-danger); font-size:0.85rem; margin-bottom:1rem;"></div>
+
+                    <p style="font-size:0.9rem; color:#fff; margin-bottom:1rem;">
+                        Are you sure you want to permanently remove administrator account:
+                        <strong id="removeTargetUsernameDisplay" style="color:var(--sa-danger); font-size:1rem;"></strong>?
+                    </p>
+
+                    <div style="padding:0.75rem; background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239, 68, 68, 0.3); border-radius:6px; font-size:0.8rem; color:#fca5a5; margin-bottom:1rem;">
+                        ⚠️ <strong>Privileged Action:</strong> This account will be deleted from active authentication and active tokens will be revoked immediately.
+                        <br><br>
+                        <em>Note: Historical custody logs and cases authored by this administrator are retained to preserve chain-of-custody integrity.</em>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <input type="checkbox" id="checkConfirmRemoval" required style="width:auto; cursor:pointer;">
+                        <label for="checkConfirmRemoval" style="font-size:0.85rem; color:var(--sa-text); cursor:pointer;">
+                            I confirm removal of this administrator account.
+                        </label>
+                    </div>
+                </div>
+                <div class="sa-modal-footer">
+                    <button type="button" class="sa-btn-secondary" data-close="modalRemoveAdmin">Cancel</button>
+                    <button type="submit" id="btnSubmitRemoveAdmin" class="sa-btn-action delete" style="padding:0.6rem 1.25rem; font-size:0.875rem;">Delete Admin Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js?v=5"></script>
+    <script src="js/api.js?v=5"></script>
+    <script src="js/superadmin.js?v=5"></script>
+</body>
+</html>

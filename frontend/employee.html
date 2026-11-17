@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Employee Portal - ChainVault</title>
+    <link rel="stylesheet" href="css/style.css?v=2">
+    <link rel="stylesheet" href="css/dashboard.css?v=2">
+    <link rel="stylesheet" href="css/employee.css?v=1">
+</head>
+<body class="employee-body">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="logo">
+            <span style="color:#10b981;">⚡</span> ChainVault
+        </div>
+        <div class="portal-tag">EMPLOYEE PORTAL</div>
+        <ul class="nav-links">
+            <li class="active"><a href="#tasks" data-view="tasks">My Assigned Tasks</a></li>
+            <li><a href="#evidence" data-view="evidence">Authorized Evidence</a></li>
+            <li><a href="#activity" data-view="activity">My Activity Trail</a></li>
+        </ul>
+
+        <!-- Dynamic Employee Profile in Sidebar -->
+        <div class="sidebar-user-section">
+            <div class="sidebar-user-card" id="empSidebarUserCard">
+                <div class="sidebar-user-avatar emp-avatar" id="empUserAvatar">EM</div>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name" id="empUserName">Loading...</div>
+                    <div class="sidebar-user-id" id="empUserId">--</div>
+                    <div class="sidebar-user-badge-role emp-badge-role" id="empUserRole">EMPLOYEE</div>
+                </div>
+            </div>
+        </div>
+        <div class="logout-container">
+            <button id="empLogoutBtn" class="btn-outline">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-content">
+        <!-- Toast Notification Banner -->
+        <div id="toastBanner" class="toast-banner"></div>
+
+        <!-- Global Header -->
+        <header class="dashboard-header">
+            <div>
+                <h2 id="pageTitle" style="margin:0;">Employee Workspace</h2>
+                <span style="color:#94a3b8; font-size:0.85rem;">Task execution & assigned evidence verification</span>
+            </div>
+            <div style="display:flex; align-items:center; gap: 1rem;">
+                <div class="user-badge emp-header-badge">
+                    <span class="emp-pill">EMPLOYEE</span>
+                    <strong id="empHeaderBadgeName">Loading...</strong>
+                </div>
+                <div class="system-status">
+                    <span class="status-indicator"></span>
+                    <span id="systemStatusText">Operational</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Overview Cards -->
+        <section class="stats-grid emp-stats-grid">
+            <div class="stat-card">
+                <h3>Total Assigned Tasks</h3>
+                <p id="statTotalTasks" class="stat-value">--</p>
+                <span class="stat-sub">Active work assignments</span>
+            </div>
+            <div class="stat-card" style="border-left: 4px solid #38bdf8;">
+                <h3>In Progress</h3>
+                <p id="statInProgressTasks" class="stat-value" style="color:#38bdf8;">--</p>
+                <span class="stat-sub">Ongoing operations</span>
+            </div>
+            <div class="stat-card" style="border-left: 4px solid #10b981;">
+                <h3>Completed Tasks</h3>
+                <p id="statCompletedTasks" class="stat-value" style="color:#10b981;">--</p>
+                <span class="stat-sub">Finalized forensic work</span>
+            </div>
+            <div class="stat-card" style="border-left: 4px solid #a855f7;">
+                <h3>Authorized Evidence</h3>
+                <p id="statPermittedEvidence" class="stat-value" style="color:#c084fc;">--</p>
+                <span class="stat-sub">Scoped access items</span>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- VIEW 1: MY ASSIGNED TASKS                                    -->
+        <!-- ============================================================ -->
+        <section id="view-tasks" class="dashboard-view active">
+            <div class="panel">
+                <div class="panel-header-flex">
+                    <div>
+                        <h3 class="panel-title">Assigned Operational Tasks</h3>
+                        <p class="panel-subtitle">Review instructions, case references, and update execution progress.</p>
+                    </div>
+                    <div style="display:flex; gap:0.5rem; align-items:center;">
+                        <select id="filterTaskStatus" class="select-filter">
+                            <option value="ALL">All Statuses</option>
+                            <option value="ASSIGNED">Assigned</option>
+                            <option value="IN_PROGRESS">In Progress</option>
+                            <option value="COMPLETED">Completed</option>
+                            <option value="BLOCKED">Blocked</option>
+                        </select>
+                        <button id="btnRefreshTasks" class="btn-sm btn-primary">Refresh</button>
+                    </div>
+                </div>
+
+                <!-- Tasks Cards Container -->
+                <div id="tasksContainer" class="tasks-grid">
+                    <div class="loading-placeholder">Loading assigned tasks...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- VIEW 2: AUTHORIZED EVIDENCE                                  -->
+        <!-- ============================================================ -->
+        <section id="view-evidence" class="dashboard-view">
+            <div class="panel">
+                <div class="panel-header-flex">
+                    <div>
+                        <h3 class="panel-title">Authorized Case Evidence Items</h3>
+                        <p class="panel-subtitle">Evidence records explicitly permitted by your active work assignments.</p>
+                    </div>
+                    <button id="btnRefreshEvidence" class="btn-sm btn-primary">Refresh</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Evidence ID</th>
+                                <th>Case ID</th>
+                                <th>Filename</th>
+                                <th>SHA-256 Digest</th>
+                                <th>File Size</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="empEvidenceTableBody">
+                            <tr><td colspan="6" style="text-align:center;">Loading authorized evidence...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- VIEW 3: MY ACTIVITY TRAIL                                    -->
+        <!-- ============================================================ -->
+        <section id="view-activity" class="dashboard-view">
+            <div class="panel">
+                <div class="panel-header-flex">
+                    <div>
+                        <h3 class="panel-title">Work Activity Stream</h3>
+                        <p class="panel-subtitle">Audited record of your task progression and work notes.</p>
+                    </div>
+                    <button id="btnRefreshActivity" class="btn-sm btn-primary">Refresh</button>
+                </div>
+                <div id="activityStreamContainer" class="activity-stream">
+                    <div class="loading-placeholder">Loading activity trail...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal: Update Task Progress -->
+    <div id="modalUpdateProgress" class="modal">
+        <div class="modal-content modal-content-dark">
+            <span class="close-btn" onclick="closeModal('modalUpdateProgress')">&times;</span>
+            <h3 style="margin-top:0; color:#10b981;">Update Task Progress</h3>
+            <p id="modalTaskTitle" style="color:#94a3b8; font-size:0.9rem; margin-bottom:1rem;"></p>
+            <form id="formUpdateProgress">
+                <input type="hidden" id="modalTaskId">
+                
+                <div class="form-group">
+                    <label for="modalTaskStatus">Status</label>
+                    <select id="modalTaskStatus" class="form-input" required>
+                        <option value="ASSIGNED">Assigned (Not Started)</option>
+                        <option value="IN_PROGRESS">In Progress</option>
+                        <option value="COMPLETED">Completed</option>
+                        <option value="BLOCKED">Blocked / Need Assistance</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label for="modalTaskPercent">Progress Percentage</label>
+                        <strong id="modalPercentDisplay" style="color:#10b981; font-size:1.1rem;">0%</strong>
+                    </div>
+                    <input type="range" id="modalTaskPercent" min="0" max="100" value="0" class="progress-slider">
+                </div>
+
+                <div class="form-group">
+                    <label for="modalTaskNote">Progress Notes / Activity Details</label>
+                    <textarea id="modalTaskNote" rows="3" class="form-input" placeholder="Describe actions performed (e.g. verified hash, extracted metadata)..." required></textarea>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1.5rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modalUpdateProgress')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="background:#10b981;">Save Progress</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js?v=5"></script>
+    <script src="js/api.js?v=6"></script>
+    <script src="js/employee.js?v=1"></script>
+</body>
+</html>

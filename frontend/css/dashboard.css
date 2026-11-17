@@ -144,6 +144,8 @@ body {
 
 .badge.success { background-color: rgba(46, 204, 113, 0.2); color: var(--success); }
 .badge.danger { background-color: rgba(231, 76, 60, 0.2); color: var(--danger); }
+.badge.warning { background-color: rgba(241, 196, 15, 0.2); color: var(--warning); }
+.badge.neutral { background-color: rgba(149, 165, 166, 0.2); color: #95a5a6; }
 
 .bc-info p {
     margin-bottom: 0.75rem;
@@ -356,5 +358,96 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+/* Sidebar User Profile Card */
+.sidebar-user-section {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--accent-color);
+    background: rgba(13, 27, 42, 0.4);
+}
+
+.sidebar-user-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 0.4rem;
+    transition: background 0.2s;
+}
+
+.sidebar-user-card:hover {
+    background: rgba(65, 90, 119, 0.2);
+}
+
+.sidebar-user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-user-info {
+    flex: 1;
+    min-width: 0;
+    line-height: 1.25;
+}
+
+.sidebar-user-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-user-id {
+    font-size: 0.72rem;
+    color: var(--highlight-color);
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-user-badge-role {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    margin-top: 0.2rem;
+    letter-spacing: 0.05em;
+}
+
+.btn-edit-profile {
+    background: transparent;
+    border: none;
+    color: var(--highlight-color);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0.25rem;
+    border-radius: 4px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.btn-edit-profile:hover {
+    opacity: 1;
+    color: #fff;
 }
 

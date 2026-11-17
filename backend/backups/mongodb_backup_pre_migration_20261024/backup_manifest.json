@@ -1,0 +1,36 @@
+{
+  "database": "chainvault",
+  "collections": {
+    "idempotency_records": {
+      "count": 0,
+      "file": "idempotency_records.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "audit_logs": {
+      "count": 3,
+      "file": "audit_logs.json",
+      "sha256": "fc80584264242cb059d2600b6a655f7667ea640edf82458dffdb6c52c9673ed6"
+    },
+    "cases": {
+      "count": 0,
+      "file": "cases.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "evidence": {
+      "count": 2,
+      "file": "evidence.json",
+      "sha256": "1bf93a015501cee0b54e51995c820d2b5cbc3d9ce34e964306a0fa73e46a4714"
+    },
+    "blockchain_checkpoints": {
+      "count": 1,
+      "file": "blockchain_checkpoints.json",
+      "sha256": "c55dc877c9d9fcb898221c9b49cd4bf33353b132ea00a8c3775e339ad2f1aa83"
+    },
+    "reports": {
+      "count": 0,
+      "file": "reports.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "total_records": 6
+}

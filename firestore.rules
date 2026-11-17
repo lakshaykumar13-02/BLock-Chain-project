@@ -1,0 +1,13 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ChainVault Security Posture:
+    // Client SDK access is completely denied to enforce that all database operations
+    // must route exclusively through the FastAPI backend authenticated via JWT/RBAC.
+    // The backend connects via the Google Cloud Server SDK using service account IAM roles,
+    // which automatically bypasses client-side security rules.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

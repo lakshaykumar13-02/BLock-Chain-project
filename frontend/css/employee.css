@@ -1,0 +1,326 @@
+/* ==========================================================================
+   ChainVault — Employee Portal Specialized Styles
+   ========================================================================== */
+
+.employee-body {
+    background-color: #0b0f19;
+    color: #f1f5f9;
+}
+
+.portal-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
+    margin: -0.5rem 1.25rem 1rem;
+    display: inline-block;
+    width: fit-content;
+}
+
+.emp-avatar {
+    background: linear-gradient(135deg, #059669, #10b981) !important;
+    color: #fff !important;
+}
+
+.emp-badge-role {
+    color: #10b981 !important;
+    font-weight: 600;
+}
+
+.emp-header-badge {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+}
+
+.emp-pill {
+    background: #10b981;
+    color: #042f2e;
+    font-weight: 800;
+    font-size: 0.72rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    margin-right: 0.5rem;
+    letter-spacing: 0.05em;
+}
+
+.emp-stats-grid .stat-card {
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(51, 65, 85, 0.6);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.emp-stats-grid .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.stat-sub {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.panel-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.panel-title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #f8fafc;
+}
+
+.panel-subtitle {
+    margin: 0.2rem 0 0;
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+.select-filter {
+    background: #1e293b;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+.select-filter:focus {
+    border-color: #10b981;
+}
+
+/* Tasks Grid & Cards */
+.tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1rem;
+}
+
+.task-card {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.task-card:hover {
+    border-color: #475569;
+    transform: translateY(-2px);
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.task-id-badge {
+    font-family: monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.12);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.task-priority-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.priority-HIGH, .priority-CRITICAL {
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.15);
+}
+
+.priority-MEDIUM {
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.15);
+}
+
+.priority-LOW {
+    color: #94a3b8;
+    background: rgba(148, 163, 184, 0.15);
+}
+
+.task-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin-bottom: 0.5rem;
+}
+
+.task-description {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.task-meta-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.meta-pill {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #cbd5e1;
+}
+
+.meta-pill strong {
+    color: #94a3b8;
+    margin-right: 0.2rem;
+}
+
+.evidence-tag {
+    background: rgba(168, 85, 247, 0.15);
+    color: #c084fc;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 4px;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.75rem;
+    font-family: monospace;
+    display: inline-block;
+    margin: 0.15rem 0.25rem 0.15rem 0;
+}
+
+.task-progress-box {
+    margin: 0.75rem 0 1rem;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-bottom: 0.3rem;
+}
+
+.progress-bar-bg {
+    background: #1e293b;
+    border-radius: 9999px;
+    height: 8px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    background: linear-gradient(90deg, #10b981, #06b6d4);
+    height: 100%;
+    border-radius: 9999px;
+    transition: width 0.3s ease;
+}
+
+.task-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #1e293b;
+    padding-top: 0.75rem;
+    margin-top: auto;
+}
+
+.status-badge-inline {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+}
+
+.status-ASSIGNED {
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.15);
+}
+
+.status-IN_PROGRESS {
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.15);
+}
+
+.status-COMPLETED {
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.15);
+}
+
+.status-BLOCKED {
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.15);
+}
+
+/* Activity Stream */
+.activity-stream {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.activity-item {
+    background: rgba(30, 41, 59, 0.5);
+    border-left: 3px solid #10b981;
+    border-radius: 0 8px 8px 0;
+    padding: 0.85rem 1.25rem;
+}
+
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-bottom: 0.25rem;
+}
+
+.activity-note {
+    font-size: 0.9rem;
+    color: #e2e8f0;
+}
+
+/* Modal dark enhancements */
+.modal-content-dark {
+    background: #0f172a !important;
+    border: 1px solid #334155 !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.progress-slider {
+    width: 100%;
+    accent-color: #10b981;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.loading-placeholder {
+    color: #94a3b8;
+    text-align: center;
+    padding: 2.5rem;
+    font-size: 0.95rem;
+}

@@ -1,0 +1,116 @@
+# =============================================================================
+# ChainVault Render Blueprint Deployment Specification
+# =============================================================================
+# Architecture:
+# 1. Web Service (FastAPI): REST API with Persistent Disk for evidence & reports
+# 2. Static Site (Frontend): HTML/CSS/JS frontend dashboard
+#
+# NOTE: This manifest defines infrastructure-as-code for dry-run preparation.
+# DO NOT apply or deploy without explicit authorization.
+
+services:
+  # ---------------------------------------------------------------------------
+  # 1. Backend Web Service (FastAPI REST API)
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: chainvault-api
+    runtime: python
+    region: oregon
+    plan: standard # Required for persistent disk attachment
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    disk:
+      name: chainvault-storage
+      mountPath: /var/data
+      sizeGB: 10
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: ENVIRONMENT
+        value: staging
+      - key: REQUIRE_PERSISTENT_STORAGE
+        value: "true"
+
+      # Primary Database: Google Cloud Firestore (Staging)
+      - key: DATABASE_BACKEND
+        value: firestore
+      - key: FIREBASE_PROJECT_ID
+        value: chainvault-staging
+      - key: FIRESTORE_DATABASE_ID
+        value: "(default)"
+      # Render Secret File path (uploaded via Render Dashboard -> Secret Files)
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/secrets/gcp-service-account.json
+
+      # Authoritative Rollback Source (MongoDB) - Configured if operating hybrid/rollback mode
+      - key: MONGO_URI
+        sync: false # Set securely in Render dashboard if MongoDB Atlas fallback is connected
+      - key: MONGO_DB_NAME
+        value: chainvault_staging
+
+      # Authentication & Security
+      - key: JWT_SECRET
+        generateValue: true # Render automatically generates a cryptographically secure 256-bit random key
+      - key: JWT_EXPIRE_MINUTES
+        value: "60"
+      - key: SUPER_ADMIN_INITIAL_USERNAME
+        value: superadmin
+      - key: SUPER_ADMIN_INITIAL_PASSWORD
+        sync: false # Set strong initial password (min 12 chars) in Render dashboard
+      - key: ADMIN_INITIAL_PASSWORD
+        sync: false # Set strong initial password (min 12 chars) in Render dashboard
+      - key: INVESTIGATOR_INITIAL_PASSWORD
+        sync: false # Set strong initial password (min 12 chars) in Render dashboard
+
+      # Blockchain Configuration (Ethereum Sepolia Testnet)
+      - key: BLOCKCHAIN_RPC_URL
+        sync: false # Set securely in Render dashboard (e.g. Infura/Alchemy Sepolia endpoint)
+      - key: BLOCKCHAIN_CHAIN_ID
+        value: "11155111" # Ethereum Sepolia Testnet
+      - key: CONTRACT_ADDRESS
+        sync: false # Set to deployed EvidenceRegistryV2 address on Sepolia (0x...)
+
+      # Persistent File Storage (Mounted on Render Persistent Disk)
+      - key: STORAGE_PATH
+        value: /var/data/evidence
+      - key: REPORTS_PATH
+        value: /var/data/reports
+
+      # Public Verification & CORS
+      - key: PUBLIC_VERIFICATION_URL_BASE
+        sync: false # Set to public API URL (e.g. https://chainvault-api.onrender.com)
+      - key: LOCAL_VERIFICATION_URL_BASE
+        value: http://localhost:8000
+      - key: ALLOW_LOCAL_QR_LINKS
+        value: "false" # Reject unroutable localhost links in reports
+      - key: CORS_ORIGINS
+        sync: false # Set to frontend URL (e.g. https://chainvault-frontend.onrender.com)
+
+      # Reverse Proxy & Rate Limiting
+      - key: TRUSTED_PROXIES
+        value: 127.0.0.1,::1,10.0.0.0/8
+
+  # ---------------------------------------------------------------------------
+  # 2. Frontend Static Site (Vanilla HTML/CSS/JS Dashboard)
+  # ---------------------------------------------------------------------------
+  - type: static
+    name: chainvault-frontend
+    region: oregon
+    rootDir: frontend
+    buildCommand: "" # Pure static assets, no build step required
+    staticPublishPath: .
+    headers:
+      - path: /*
+        name: Strict-Transport-Security
+        value: max-age=31536000; includeSubDomains
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin

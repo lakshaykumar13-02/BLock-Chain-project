@@ -1,0 +1,212 @@
+{
+  "timestamp": "2026-10-24T09:56:14.705446Z",
+  "mode": "EXECUTE",
+  "source_mongo": {
+    "uri": "mongodb://localhost:27017",
+    "db_name": "chainvault"
+  },
+  "destination_firestore": {
+    "emulator_host": "127.0.0.1:8080",
+    "project_id": "chainvault-emulator"
+  },
+  "collections": {
+    "cases": {
+      "source_collection": "cases",
+      "destination_collection": "cases",
+      "source_count": 0,
+      "migrated_count": 0,
+      "already_present_count": 0,
+      "conflict_count": 0,
+      "error_count": 0,
+      "conflicts": [],
+      "errors": [],
+      "hash_verification": {
+        "verified": 0,
+        "mismatched": 0,
+        "skipped": 0
+      },
+      "file_checks": {
+        "verified_on_disk": 0,
+        "missing_on_disk": 0,
+        "hash_mismatches": 0
+      }
+    },
+    "evidence": {
+      "source_collection": "evidence",
+      "destination_collection": "evidence",
+      "source_count": 2,
+      "migrated_count": 0,
+      "already_present_count": 2,
+      "conflict_count": 0,
+      "error_count": 0,
+      "conflicts": [],
+      "errors": [],
+      "hash_verification": {
+        "verified": 0,
+        "mismatched": 0,
+        "skipped": 0
+      },
+      "file_checks": {
+        "verified_on_disk": 2,
+        "missing_on_disk": 0,
+        "hash_mismatches": 0
+      }
+    },
+    "audit_logs": {
+      "source_collection": "audit_logs",
+      "destination_collection": "audit_logs",
+      "source_count": 3,
+      "migrated_count": 0,
+      "already_present_count": 3,
+      "conflict_count": 0,
+      "error_count": 0,
+      "conflicts": [],
+      "errors": [],
+      "hash_verification": {
+        "verified": 3,
+        "mismatched": 0,
+        "skipped": 0
+      },
+      "file_checks": {
+        "verified_on_disk": 0,
+        "missing_on_disk": 0,
+        "hash_mismatches": 0
+      }
+    },
+    "custody_transactions": {
+      "source_collection": "custody_transactions",
+      "destination_collection": "custody_transactions",
+      "source_count": 0,
+      "migrated_count": 0,
+      "already_present_count": 0,
+      "conflict_count": 0,
+      "error_count": 0,
+      "conflicts": [],
+      "errors": [],
+      "hash_verification": {
+        "verified": 0,
+        "mismatched": 0,
+        "skipped": 0
+      },
+      "file_checks": {
+        "verified_on_disk": 0,
+        "missing_on_disk": 0,
+        "hash_mismatches": 0
+      }
+    },
+    "idempotency_records": {
+      "source_collection": "idempotency_records",
+      "destination_collection": "idempotency_records",
+      "source_count": 0,
+      "migrated_count": 0,
+      "already_present_count": 0,
+      "conflict_count": 0,
+      "error_count": 0,
+      "conflicts": [],
+      "errors": [],
+      "hash_verification": {
+        "verified": 0,
+        "mismatched": 0,
+        "skipped": 0
+      },
+      "file_checks": {
+        "verified_on_disk": 0,
+        "missing_on_disk": 0,
+        "hash_mismatches": 0
+      }
+    },
+    "blockchain_checkpoints": {
+      "source_collection": "blockchain_checkpoints",
+      "destination_collection": "blockchain_checkpoints",
+      "source_count": 1,
+      "migrated_count": 0,
+      "already_present_count": 1,
+      "conflict_count": 0,
+      "error_count": 0,
+      "conflicts": [],
+      "errors": [],
+      "hash_verification": {
+        "verified": 0,
+        "mismatched": 0,
+        "skipped": 0
+      },
+      "file_checks": {
+        "verified_on_disk": 0,
+        "missing_on_disk": 0,
+        "hash_mismatches": 0
+      }
+    },
+    "reports": {
+      "source_collection": "reports",
+      "destination_collection": "reports",
+      "source_count": 0,
+      "migrated_count": 0,
+      "already_present_count": 0,
+      "conflict_count": 0,
+      "error_count": 0,
+      "conflicts": [],
+      "errors": [],
+      "hash_verification": {
+        "verified": 0,
+        "mismatched": 0,
+        "skipped": 0
+      },
+      "file_checks": {
+        "verified_on_disk": 0,
+        "missing_on_disk": 0,
+        "hash_mismatches": 0
+      }
+    },
+    "users": {
+      "source_collection": "users",
+      "destination_collection": "users",
+      "source_count": 0,
+      "migrated_count": 0,
+      "already_present_count": 0,
+      "conflict_count": 0,
+      "error_count": 0,
+      "conflicts": [],
+      "errors": [],
+      "hash_verification": {
+        "verified": 0,
+        "mismatched": 0,
+        "skipped": 0
+      },
+      "file_checks": {
+        "verified_on_disk": 0,
+        "missing_on_disk": 0,
+        "hash_mismatches": 0
+      }
+    },
+    "custody_logs": {
+      "source_collection": "custody_logs",
+      "destination_collection": "audit_logs",
+      "source_count": 0,
+      "migrated_count": 0,
+      "already_present_count": 0,
+      "conflict_count": 0,
+      "error_count": 0,
+      "conflicts": [],
+      "errors": [],
+      "hash_verification": {
+        "verified": 0,
+        "mismatched": 0,
+        "skipped": 0
+      },
+      "file_checks": {
+        "verified_on_disk": 0,
+        "missing_on_disk": 0,
+        "hash_mismatches": 0
+      }
+    }
+  },
+  "summary": {
+    "total_source_records": 6,
+    "total_migrated": 0,
+    "total_already_identical": 6,
+    "total_conflicts": 0,
+    "total_errors": 0,
+    "status": "SUCCESS"
+  },
+  "duration_seconds": 0.104137
+}

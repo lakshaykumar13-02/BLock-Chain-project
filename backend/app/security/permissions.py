@@ -3,10 +3,12 @@ from fastapi import Depends, HTTPException, status
 from .auth import get_current_user
 
 class UserRole(str, Enum):
+    SUPER_ADMIN = "SUPER_ADMIN"
     ADMIN = "ADMIN"
     INVESTIGATOR = "INVESTIGATOR"
     ANALYST = "ANALYST"
     VIEWER = "VIEWER"
+    EMPLOYEE = "EMPLOYEE"
 
 def require_role(allowed_roles: list[UserRole]):
     """FastAPI dependency to verify the caller has one of the allowed roles."""

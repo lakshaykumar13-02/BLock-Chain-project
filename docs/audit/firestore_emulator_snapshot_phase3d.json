@@ -1,0 +1,130 @@
+{
+  "snapshot_timestamp": "2026-10-24T10:06:34.854041+00:00",
+  "project_id": "chainvault-emulator",
+  "collections": {
+    "evidence": {
+      "EV-PH4-001": {
+        "file_hash": "55468452ec534edc3bafa924f91577bc1f244fcff2fc66771b554182aadd71b8",
+        "stored_filename": "f9e7dfad_artifact_001.bin",
+        "blockchain_tx": "0x2470480822d0fe208ce39abb8929254f47b45716067e987258b30348e4d9d1e7",
+        "file_size": 40,
+        "filename": "artifact_001.bin",
+        "file_path": "D:\\parjaayi project\\CHAINVAULT\\backend\\storage\\evidence\\f9e7dfad_artifact_001.bin",
+        "custodian": "investigator1",
+        "contract_address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        "blockchain_registered": true,
+        "evidence_id": "EV-PH4-001",
+        "block_number": 101,
+        "case_id": "CV-PH4-001",
+        "uploaded_at": "2026-10-20T15:05:14.753457+00:00"
+      },
+      "EV-PH4-DEBUG": {
+        "file_hash": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+        "stored_filename": "a9e68179_test.bin",
+        "blockchain_tx": null,
+        "file_size": 5,
+        "filename": "test.bin",
+        "file_path": "D:\\parjaayi project\\CHAINVAULT\\backend\\storage\\evidence\\a9e68179_test.bin",
+        "custodian": "investigator1",
+        "blockchain_registered": false,
+        "evidence_id": "EV-PH4-DEBUG",
+        "case_id": "CV-DEBUG",
+        "uploaded_at": "2026-10-20T15:03:12.005779+00:00"
+      }
+    },
+    "audit_logs": {
+      "EVT-EV-PH4-001-0001-F34E97": {
+        "event_hash": "0ab74796602bb3f794388bdf89af2ae5a8a58c682533f1a6eded570e2155e58e",
+        "schema_version": 1,
+        "reason": "Initial digital evidence ingestion",
+        "previous_custodian": "None",
+        "event_id": "EVT-EV-PH4-001-0001-F34E97",
+        "details": {
+          "file_hash": "55468452ec534edc3bafa924f91577bc1f244fcff2fc66771b554182aadd71b8",
+          "new_custodian": "investigator1",
+          "file_size": 40,
+          "previous_custodian": "None",
+          "reason": "Initial digital evidence ingestion",
+          "filename": "artifact_001.bin"
+        },
+        "new_custodian": "investigator1",
+        "timestamp": "2026-10-20T15:05:14.753457+00:00",
+        "evidence_id": "EV-PH4-001",
+        "case_id": "CV-PH4-001",
+        "log_id": "EVT-EV-PH4-001-0001-F34E97",
+        "blockchain_tx": null,
+        "action": "EVIDENCE_INGESTION",
+        "previous_event_hash": "GENESIS",
+        "anchor_reference": null,
+        "actor_id": "investigator1",
+        "sequence_number": 1
+      },
+      "EVT-EV-PH4-001-0002-859D19": {
+        "event_hash": "9523d0bfce9c791655b32c144e589ad5fb404a4eaf9e6fde4a2e8c7fe01c2c4d",
+        "schema_version": 1,
+        "reason": null,
+        "previous_custodian": null,
+        "event_id": "EVT-EV-PH4-001-0002-859D19",
+        "details": {
+          "file_hash": "55468452ec534edc3bafa924f91577bc1f244fcff2fc66771b554182aadd71b8",
+          "contract_address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+          "tx_hash": "0x2470480822d0fe208ce39abb8929254f47b45716067e987258b30348e4d9d1e7",
+          "block_number": 101
+        },
+        "new_custodian": null,
+        "timestamp": "2026-10-20T15:05:16.844953Z",
+        "evidence_id": "EV-PH4-001",
+        "case_id": "CV-PH4-001",
+        "log_id": "EVT-EV-PH4-001-0002-859D19",
+        "blockchain_tx": "0x2470480822d0fe208ce39abb8929254f47b45716067e987258b30348e4d9d1e7",
+        "action": "BLOCKCHAIN_REGISTRATION",
+        "previous_event_hash": "0ab74796602bb3f794388bdf89af2ae5a8a58c682533f1a6eded570e2155e58e",
+        "anchor_reference": "0x2470480822d0fe208ce39abb8929254f47b45716067e987258b30348e4d9d1e7",
+        "actor_id": "investigator1",
+        "sequence_number": 2
+      },
+      "EVT-EV-PH4-DEBUG-0001-2F5306": {
+        "event_hash": "dad806bf5049405a171840d8e4e54bab2319161504375bfa9ac2d55ad7741c73",
+        "schema_version": 1,
+        "reason": "Initial digital evidence ingestion",
+        "previous_custodian": "None",
+        "event_id": "EVT-EV-PH4-DEBUG-0001-2F5306",
+        "details": {
+          "file_hash": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+          "new_custodian": "investigator1",
+          "file_size": 5,
+          "previous_custodian": "None",
+          "reason": "Initial digital evidence ingestion",
+          "filename": "test.bin"
+        },
+        "new_custodian": "investigator1",
+        "timestamp": "2026-10-20T15:03:12.005779+00:00",
+        "evidence_id": "EV-PH4-DEBUG",
+        "case_id": "CV-DEBUG",
+        "log_id": "EVT-EV-PH4-DEBUG-0001-2F5306",
+        "blockchain_tx": null,
+        "action": "EVIDENCE_INGESTION",
+        "previous_event_hash": "GENESIS",
+        "anchor_reference": null,
+        "actor_id": "investigator1",
+        "sequence_number": 1
+      }
+    },
+    "blockchain_checkpoints": {
+      "CHK-EV-PH4-001": {
+        "tx_hash": "0x2470480822d0fe208ce39abb8929254f47b45716067e987258b30348e4d9d1e7",
+        "contract_address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        "file_hash": "55468452ec534edc3bafa924f91577bc1f244fcff2fc66771b554182aadd71b8",
+        "chain_id": 31337,
+        "evidence_id": "EV-PH4-001",
+        "checkpoint_id": "CHK-EV-PH4-001",
+        "block_number": 101
+      }
+    },
+    "cases": {},
+    "reports": {},
+    "custody_transactions": {},
+    "idempotency_records": {},
+    "users": {}
+  }
+}

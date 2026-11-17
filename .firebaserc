@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "chainvault-staging",
+    "staging": "chainvault-staging"
+  }
+}
